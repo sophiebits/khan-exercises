@@ -371,11 +371,16 @@ jQuery.fn.tmpl = function() {
 		for ( var attr in jQuery.tmpl.attr ) {
 			var value;
 
+			// Remove attributes (and data) after templating to avoid things getting double-processed,
+			// which happens especially with data-each loops
 			if ( ( /^data-/ ).test( attr ) ) {
-				value = $elem.data( attr.replace( /^data-/, "" ) );
+				var dataName = attr.replace( /^data-/, "" );
+				value = $elem.data( dataName );
+				$elem.removeData( jQuery.camelCase( dataName ) );
 			} else {
 				value = $elem.attr( attr );
 			}
+			$elem.removeAttr( attr );
 
 			if ( value !== undefined ) {
 				ret = jQuery.tmpl.attr[ attr ]( elem, value );
