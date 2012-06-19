@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-require="math graphie math-format interactive">
+<html data-require="math graphie graphie-3d math-format interactive">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Solid geometry</title>
@@ -11,28 +11,6 @@
         <div id="interactive">
             <div class="vars">
                 <var id="S">randRange(1, 7)</var>
-                <!-- A cube!
-                <var id="VERTICES">[
-                    [-0.5, -0.5, -0.5],
-                    [-0.5, -0.5, 0.5],
-                    [-0.5, 0.5, -0.5],
-                    [-0.5, 0.5, 0.5],
-                    [0.5, -0.5, -0.5],
-                    [0.5, -0.5, 0.5],
-                    [0.5, 0.5, -0.5],
-                    [0.5, 0.5, 0.5]
-                ]</var>
-                <var id="FACES">[
-                    { face: [0, 1, 3, 2], color: ORANGE },
-                    { face: [0, 1, 5, 4], color: GREEN },
-                    { face: [0, 4, 6, 2], color: BLUE },
-                    { face: [1, 3, 7, 5], color: BLUE },
-                    { face: [2, 6, 7, 3], color: GREEN },
-                    { face: [4, 5, 7, 6], color: ORANGE }
-                ]</var>
-                -->
-
-                <!-- A prism! -->
                 <var id="VERTICES">[
                     [-1, 0.5, 1],
                     [1, 0.5, 1],
@@ -42,11 +20,11 @@
                     [0, -0.5, -1]
                 ]</var>
                 <var id="FACES">[
-                    { face: [0, 1, 2], color: GRAY },
+                    { face: [0, 2, 1], color: GRAY },
                     { face: [3, 4, 5], color: GRAY },
-                    { face: [0, 3, 4, 1], color: ORANGE },
-                    { face: [1, 4, 5, 2], color: BLUE },
-                    { face: [2, 5, 3, 0], color: GREEN }
+                    { face: [0, 1, 4, 3], color: ORANGE },
+                    { face: [1, 2, 5, 4], color: BLUE },
+                    { face: [0, 3, 5, 2], color: GREEN }
                 ]</var>
             </div>
             <p class="question">
@@ -59,6 +37,14 @@
                 graph.image1 = raphael.set();
                 graph.image2 = raphael.set();
                 graph.images = [raphael.set()];
+                graph.labels = [[]];
+
+                graph.obj = makeObject(VERTICES);
+                graph.obj.addFace({ verts: [0, 2, 1], color: GRAY })
+                         .addFace({ verts: [3, 4, 5], color: GRAY })
+                         .addFace({ verts: [0, 1, 4, 3], color: ORANGE })
+                         .addFace({ verts: [1, 2, 5, 4], color: BLUE })
+                         .addFace({ verts: [0, 3, 5, 2], color: GREEN });
 
 
                 var c = [0, 0, 5.0];
@@ -96,28 +82,66 @@
                 graph.drawIt = function() {
                     if (!graph.drawPending) {
                         graph.drawPending = true;
+                        var normalOf = function(face) {
+                            var a = VERTICES[face.face[0]];
+                            var b = VERTICES[face.face[1]];
+                            var c = VERTICES[face.face[2]];
+
+                            var ab = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
+                            var ac = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+
+                            var normal = [
+                                ab[1] * ac[2] - ab[2] * ac[1],
+                                ab[2] * ac[0] - ab[0] * ac[2],
+                                ab[0] * ac[1] - ab[1] * ac[0]
+                            ];
+
+                            return normal;
+                        };
+                        var facing = function(face) {
+                            var normal = normalOf(face);
+                            var dot = normal[0] * myNormal[0] +
+                                      normal[1] * myNormal[1] +
+                                      normal[2] * myNormal[2];
+                            return dot;
+                        };
+                        var myNormal = [sin(x) * cos(y), sin(y), cos(x) * cos(y)];
                         var depthOf = function(face) {
-                            //var depth = _.max(_.map(face.face, function(f) {
-                            //    return graph.transformD(VERTICES[f])[2];
-                            //}));
                             var depth = _.reduce(face.face, function(s, f) {
                                 return s + graph.transformD(VERTICES[f])[2];
                             }, 0) / face.face.length;
                             return depth;
                         };
-                        var faces = _.sortBy(FACES, depthOf);
+                        var sortedFaces = _.sortBy(FACES, facing);
+                        var faces = [];
+                        _.each(sortedFaces, function(face) {
+                            <!--if (facing(face) > 0) {-->
+                                faces.push(face);
+                            <!--}-->
+                        });
                         var image = raphael.set();
                         graph.images.push(image);
+                        _.each(FACES[0].face, function(p) {
+                            var pt = VERTICES[p];
+                        });
                         _.each(faces, function(face) {
                             image.push(path(_.map(face.face, function(f) {
                                 return graph.transform(VERTICES[f]);
                             }),
                             { fill: face.color, stroke: null, opacity: 0 }));
                         });
+                        var labels = [];
+                        _.each(VERTICES, function(vert, i) {
+                            <!--labels.push(label(graph.transform(vert), i, "center", false));-->
+                        });
+                        graph.labels.push(labels);
                         image.attr({ opacity: 1.0 });
 
                         _.defer(function() {
                             graph.images.shift().remove();
+                            _.each(graph.labels.shift(), function(l) {
+                                l.remove();
+                            });
                             graph.drawPending = false;
                         });
                     }
