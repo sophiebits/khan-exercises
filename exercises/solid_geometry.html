@@ -115,9 +115,9 @@
                         var sortedFaces = _.sortBy(FACES, facing);
                         var faces = [];
                         _.each(sortedFaces, function(face) {
-                            <!--if (facing(face) > 0) {-->
+                            if (facing(face) > 0) {
                                 faces.push(face);
-                            <!--}-->
+                            }
                         });
                         var image = raphael.set();
                         graph.images.push(image);
@@ -125,10 +125,14 @@
                             var pt = VERTICES[p];
                         });
                         _.each(faces, function(face) {
+                            var color = Raphael.color(face.color);
+                            color.v *= facing(face) / 2 + 0.3;
+                            console.log(color.v);
+                            color = Raphael.hsb(color.h, color.s, Math.min(1.0, color.v));
                             image.push(path(_.map(face.face, function(f) {
                                 return graph.transform(VERTICES[f]);
                             }),
-                            { fill: face.color, stroke: null, opacity: 0 }));
+                            { fill: color, stroke: null, opacity: 0 }));
                         });
                         var labels = [];
                         _.each(VERTICES, function(vert, i) {
