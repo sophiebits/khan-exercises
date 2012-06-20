@@ -11,21 +11,39 @@
         <div id="interactive">
             <div class="vars">
                 <var id="S">randRange(1, 7)</var>
-                <var id="VERTICES">[
-                    [-1, 0.5, 1],
-                    [1, 0.5, 1],
-                    [0, -0.5, 1],
-                    [-1, 0.5, -1],
-                    [1, 0.5, -1],
-                    [0, -0.5, -1]
-                ]</var>
-                <var id="FACES">[
-                    { face: [0, 2, 1], color: GRAY },
-                    { face: [3, 4, 5], color: GRAY },
-                    { face: [0, 1, 4, 3], color: ORANGE },
-                    { face: [1, 2, 5, 4], color: BLUE },
-                    { face: [0, 3, 5, 2], color: GREEN }
-                ]</var>
+                <var id="NUMFACES">30</var>
+                <var id="VERTICES">(function() {
+                    var verts = [];
+                    for (var i = 0; i < NUMFACES; ++i) {
+                        var ang = i * 2 * PI / NUMFACES;
+                        verts.push([cos(ang), 0.5, sin(ang)]);
+                    }
+                    for (var i = 0; i < NUMFACES; ++i) {
+                        var ang = (i + 0.5) * 2 * PI / NUMFACES;
+                        verts.push([cos(ang), -0.5, sin(ang)]);
+                    }
+                    return verts;
+                })()</var>
+                <var id="FACES">(function() {
+                    var faces = [];
+                    var front = [];
+                    var back = [];
+                    for (var i = 0; i < NUMFACES; ++i) {
+                        front.push(NUMFACES - i - 1);
+                        back.push(i + NUMFACES);
+                    }
+                    faces.push({ face: front, color: GRAY });
+                    faces.push({ face: back, color: GRAY });
+                    for (var i = 0; i < NUMFACES; ++i) {
+                        var face = [i, (i + 1) % NUMFACES,
+                                    ((i) % NUMFACES) + NUMFACES];
+                        faces.push({ face: face, color: GREEN });
+                        var face = [((i + 1) % NUMFACES) + NUMFACES, i + NUMFACES,
+                                    (i + 1) % NUMFACES];
+                        faces.push({ face: face, color: GREEN });
+                    }
+                    return faces;
+                })()</var>
             </div>
             <p class="question">
                 What is the volume of this thing:
@@ -83,9 +101,9 @@
                     if (!graph.drawPending) {
                         graph.drawPending = true;
                         var normalOf = function(face) {
-                            var a = VERTICES[face.face[0]];
-                            var b = VERTICES[face.face[1]];
-                            var c = VERTICES[face.face[2]];
+                            var a = graph.transformD(VERTICES[face.face[0]]);
+                            var b = graph.transformD(VERTICES[face.face[1]]);
+                            var c = graph.transformD(VERTICES[face.face[2]]);
 
                             var ab = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
                             var ac = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
@@ -96,7 +114,15 @@
                                 ab[0] * ac[1] - ab[1] * ac[0]
                             ];
 
-                            return normal;
+                            var length = sqrt(normal[0] * normal[0] +
+                                              normal[1] * normal[1] +
+                                              normal[2] * normal[2]);
+
+                            normal[0] /= length;
+                            normal[1] /= length;
+                            normal[2] /= length;
+
+                            return normal[2];
                         };
                         var facing = function(face) {
                             var normal = normalOf(face);
@@ -112,10 +138,10 @@
                             }, 0) / face.face.length;
                             return depth;
                         };
-                        var sortedFaces = _.sortBy(FACES, facing);
+                        var sortedFaces = _.sortBy(FACES, normalOf);
                         var faces = [];
                         _.each(sortedFaces, function(face) {
-                            if (facing(face) > 0) {
+                            if (normalOf(face) > 0) {
                                 faces.push(face);
                             }
                         });
@@ -126,13 +152,12 @@
                         });
                         _.each(faces, function(face) {
                             var color = Raphael.color(face.color);
-                            color.v *= facing(face) / 2 + 0.3;
-                            console.log(color.v);
+                            color.v *= normalOf(face) / 2 + 0.3;
                             color = Raphael.hsb(color.h, color.s, Math.min(1.0, color.v));
                             image.push(path(_.map(face.face, function(f) {
                                 return graph.transform(VERTICES[f]);
                             }),
-                            { fill: color, stroke: null, opacity: 0 }));
+                            { fill: color, stroke: color, "stroke-width": 1, opacity: 0 }));
                         });
                         var labels = [];
                         _.each(VERTICES, function(vert, i) {
