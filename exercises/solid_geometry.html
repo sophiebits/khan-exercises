@@ -12,38 +12,53 @@
             <div class="vars">
                 <var id="S">randRange(1, 7)</var>
                 <var id="NUMFACES">30</var>
-                <var id="VERTICES">(function() {
-                    var verts = [];
-                    for (var i = 0; i < NUMFACES; ++i) {
-                        var ang = i * 2 * PI / NUMFACES;
-                        verts.push([cos(ang), 0.5, sin(ang)]);
-                    }
-                    for (var i = 0; i < NUMFACES; ++i) {
-                        var ang = (i + 0.5) * 2 * PI / NUMFACES;
-                        verts.push([cos(ang), -0.5, sin(ang)]);
-                    }
-                    return verts;
-                })()</var>
-                <var id="FACES">(function() {
-                    var faces = [];
-                    var front = [];
-                    var back = [];
-                    for (var i = 0; i < NUMFACES; ++i) {
-                        front.push(NUMFACES - i - 1);
-                        back.push(i + NUMFACES);
-                    }
-                    faces.push({ face: front, color: GRAY });
-                    faces.push({ face: back, color: GRAY });
-                    for (var i = 0; i < NUMFACES; ++i) {
-                        var face = [i, (i + 1) % NUMFACES,
-                                    ((i) % NUMFACES) + NUMFACES];
-                        faces.push({ face: face, color: GREEN });
-                        var face = [((i + 1) % NUMFACES) + NUMFACES, i + NUMFACES,
-                                    (i + 1) % NUMFACES];
-                        faces.push({ face: face, color: GREEN });
-                    }
-                    return faces;
-                })()</var>
+                <!--<var id="VERTICES">(function() {-->
+                    <!--var verts = [];-->
+                    <!--for (var i = 0; i < NUMFACES; ++i) {-->
+                        <!--var ang = i * 2 * PI / NUMFACES;-->
+                        <!--verts.push([cos(ang), 0.5, sin(ang)]);-->
+                    <!--}-->
+                    <!--for (var i = 0; i < NUMFACES; ++i) {-->
+                        <!--var ang = (i + 0.5) * 2 * PI / NUMFACES;-->
+                        <!--verts.push([cos(ang), -0.5, sin(ang)]);-->
+                    <!--}-->
+                    <!--return verts;-->
+                <!--})()</var>-->
+                <!--<var id="FACES">(function() {-->
+                    <!--var faces = [];-->
+                    <!--var front = [];-->
+                    <!--var back = [];-->
+                    <!--for (var i = 0; i < NUMFACES; ++i) {-->
+                        <!--front.push(NUMFACES - i - 1);-->
+                        <!--back.push(i + NUMFACES);-->
+                    <!--}-->
+                    <!--faces.push({ face: front, color: GRAY });-->
+                    <!--faces.push({ face: back, color: GRAY });-->
+                    <!--for (var i = 0; i < NUMFACES; ++i) {-->
+                        <!--var face = [i, (i + 1) % NUMFACES,-->
+                                    <!--((i) % NUMFACES) + NUMFACES];-->
+                        <!--faces.push({ face: face, color: GREEN });-->
+                        <!--var face = [((i + 1) % NUMFACES) + NUMFACES, i + NUMFACES,-->
+                                    <!--(i + 1) % NUMFACES];-->
+                        <!--faces.push({ face: face, color: GREEN });-->
+                    <!--}-->
+                    <!--return faces;-->
+                <!--})()</var>-->
+                <var id="VERTICES">[
+                    [-1, 0.5, 1],
+                    [1, 0.5, 1],
+                    [0, -0.5, 1],
+                    [-1, 0.5, -1],
+                    [1, 0.5, -1],
+                    [0, -0.5, -1]
+                ]</var>
+                <var id="FACES">[
+                    { face: [0, 2, 1], color: GRAY },
+                    { face: [3, 4, 5], color: GRAY },
+                    { face: [0, 1, 4, 3], color: ORANGE },
+                    { face: [1, 2, 5, 4], color: BLUE },
+                    { face: [0, 3, 5, 2], color: GREEN }
+                ]</var>
             </div>
             <p class="question">
                 What is the volume of this thing:
@@ -152,7 +167,7 @@
                         });
                         _.each(faces, function(face) {
                             var color = Raphael.color(face.color);
-                            color.v *= normalOf(face) / 2 + 0.3;
+                            <!--color.v *= normalOf(face) / 2 + 0.3;-->
                             color = Raphael.hsb(color.h, color.s, Math.min(1.0, color.v));
                             image.push(path(_.map(face.face, function(f) {
                                 return graph.transform(VERTICES[f]);
