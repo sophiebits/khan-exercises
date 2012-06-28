@@ -4,11 +4,13 @@ $.extend(KhanUtil, {
     makeObject: function(verts) {
         var object = {
             verts: verts,
-            perspective: {
-                pos: [0, 0, 0],
-                angle: [0, 0, 0],
-                offset: [0, 0, 5.0]
-            },
+            perspective: KhanUtil.makeMatrix([
+                [1, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]
+            ]),
+            scale: 5.0,
             faces: []
         };
 
@@ -23,33 +25,41 @@ $.extend(KhanUtil, {
 
         // set and offset the camera pos
         object.offsetPos = function(offset) {
-            this.perspective.pos[0] += offset[0];
-            this.perspective.pos[1] += offset[1];
-            this.perspective.pos[2] += offset[2];
+            this.perspective[0][3] += offset[0];
+            this.perspective[1][3] += offset[1];
+            this.perspective[2][3] += offset[2];
         };
 
         object.setPos = function(pos) {
-            this.perspective.pos = pos.slice();
+            this.perspective[0][3] = pos[0];
+            this.perspective[1][3] = pos[1];
+            this.perspective[2][3] = pos[2];
         };
 
-        // set and offset the camera angle
-        object.offsetAngle = function(offset) {
-            this.perspective.angle[0] += offset[0];
-            this.perspective.angle[1] += offset[1];
-            this.perspective.angle[2] += offset[2];
-        };
+        // perform a rotation of ang around the vector (x, y, z)
+        object.rotate = function(x, y, z, ang) {
+            var s = Math.sin(ang);
+            var c = Math.cos(ang);
 
-        object.setAngle = function(angle) {
-            this.perspective.angle = angle.slice();
+            var rotation = KhanUtil.makeMatrix([
+                [x*x*(1-c)+c,   x*y*(1-c)-z*s, x*y*(1-c)+y*s, 0],
+                [y*x*(1-c)+z*c, y*y*(1-c)+c,   y*z*(1-c)-x*s, 0],
+                [x*z*(1-c)-y*s, y*z*(1-c)+x*s, z*z*(1-c)+c,   0],
+                [0,             0,             0,             1]
+            ]);
+
+            this.perspective = KhanUtil.matrixMult(this.perspective, rotation);
         };
 
         // perform the perspective transformation stored in
         //   object.perspective on a 3d point
         object.doPerspective = function(pt) {
-            var p = [];
+            //var p = [];
+            var newpt = pt.slice();
 
-            var ang = this.perspective.angle;
-            var pos = this.perspective.pos;
+            newpt[3] = -1;
+
+            var p = KhanUtil.matrixMult(this.perspective, pt);
 
             p[0] = Math.cos(ang[1]) * (Math.sin(ang[2]) * (pt[1] - pos[1])
                  + Math.cos(ang[2]) * (pt[0] - pos[0]))
