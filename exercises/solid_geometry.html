@@ -40,30 +40,6 @@
 
                 graph.obj.setPos([0, 0, 5]);
 
-                makeMatrix = function(m) {
-                    m.r = m.length;
-                    m.c = m[0].length;
-
-                    return m;
-                };
-
-                mult = function(a, b) {
-                    var c = [];
-                    for (var i = 0; i < a.r; ++i) {
-                        c.push([]);
-                    }
-                    for (var i = 0; i < a.r; ++i) {
-                        for (var j = 0; j < b.c; ++j) {
-                            var temp = 0;
-                            for (var k = 0; k < a.c; ++k) {
-                                temp += a[i][k] * b[k][j];
-                            }
-                            c[i][j] = temp;
-                        }
-                    }
-                    return makeMatrix(c);
-                };
-
                 var x = -PI / 8;
                 var y = -PI / 6;
                 graph.obj.perspective.pos = [sin(x) * cos(y) * 5, sin(y) * 5, cos(x) * cos(y) * 5];
