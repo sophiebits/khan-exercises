@@ -10,40 +10,6 @@
     <div class="problems">
         <div id="interactive">
             <div class="vars">
-                <var id="S">randRange(1, 7)</var>
-                <var id="NUMFACES">30</var>
-                <!--<var id="VERTICES">(function() {-->
-                    <!--var verts = [];-->
-                    <!--for (var i = 0; i < NUMFACES; ++i) {-->
-                        <!--var ang = i * 2 * PI / NUMFACES;-->
-                        <!--verts.push([cos(ang), 0.5, sin(ang)]);-->
-                    <!--}-->
-                    <!--for (var i = 0; i < NUMFACES; ++i) {-->
-                        <!--var ang = (i + 0.5) * 2 * PI / NUMFACES;-->
-                        <!--verts.push([cos(ang), -0.5, sin(ang)]);-->
-                    <!--}-->
-                    <!--return verts;-->
-                <!--})()</var>-->
-                <!--<var id="FACES">(function() {-->
-                    <!--var faces = [];-->
-                    <!--var front = [];-->
-                    <!--var back = [];-->
-                    <!--for (var i = 0; i < NUMFACES; ++i) {-->
-                        <!--front.push(NUMFACES - i - 1);-->
-                        <!--back.push(i + NUMFACES);-->
-                    <!--}-->
-                    <!--faces.push({ face: front, color: GRAY });-->
-                    <!--faces.push({ face: back, color: GRAY });-->
-                    <!--for (var i = 0; i < NUMFACES; ++i) {-->
-                        <!--var face = [i, (i + 1) % NUMFACES,-->
-                                    <!--((i) % NUMFACES) + NUMFACES];-->
-                        <!--faces.push({ face: face, color: GREEN });-->
-                        <!--var face = [((i + 1) % NUMFACES) + NUMFACES, i + NUMFACES,-->
-                                    <!--(i + 1) % NUMFACES];-->
-                        <!--faces.push({ face: face, color: GREEN });-->
-                    <!--}-->
-                    <!--return faces;-->
-                <!--})()</var>-->
                 <var id="VERTICES">[
                     [-1, 0.5, 1],
                     [1, 0.5, 1],
@@ -53,11 +19,11 @@
                     [0, -0.5, -1]
                 ]</var>
                 <var id="FACES">[
-                    { face: [0, 2, 1], color: GRAY },
-                    { face: [3, 4, 5], color: GRAY },
-                    { face: [0, 1, 4, 3], color: ORANGE },
-                    { face: [1, 2, 5, 4], color: BLUE },
-                    { face: [0, 3, 5, 2], color: GREEN }
+                    { verts: [0, 2, 1], color: GRAY },
+                    { verts: [3, 4, 5], color: GRAY },
+                    { verts: [0, 1, 4, 3], color: ORANGE },
+                    { verts: [1, 2, 5, 4], color: BLUE },
+                    { verts: [0, 3, 5, 2], color: GREEN }
                 ]</var>
             </div>
             <p class="question">
@@ -67,137 +33,44 @@
                 init({range: [[-2, 2], [-2, 2]], scale: [100, 100]});
                 addMouseLayer();
 
-                graph.image1 = raphael.set();
-                graph.image2 = raphael.set();
-                graph.images = [raphael.set()];
-                graph.labels = [[]];
-
                 graph.obj = makeObject(VERTICES);
-                graph.obj.addFace({ verts: [0, 2, 1], color: GRAY })
-                         .addFace({ verts: [3, 4, 5], color: GRAY })
-                         .addFace({ verts: [0, 1, 4, 3], color: ORANGE })
-                         .addFace({ verts: [1, 2, 5, 4], color: BLUE })
-                         .addFace({ verts: [0, 3, 5, 2], color: GREEN });
+                _.each(FACES, function(face) {
+                    graph.obj.addFace(face);
+                });
 
+                graph.obj.setPos([0, 0, 5]);
 
-                var c = [0, 0, 5.0];
-                var e = [0, 0, 5.0];
-                var theta = [0, 0, 0];
+                makeMatrix = function(m) {
+                    m.r = m.length;
+                    m.c = m[0].length;
 
-                graph.transformD = function(a) {
-                    var d = [0, 0, 0];
-                    d[0] = cos(theta[1]) * (sin(theta[2]) * (a[1] - c[1]) +
-                        cos(theta[2]) * (a[0] - c[0])) - sin(theta[1]) *
-                        (a[2] - c[2]);
-                    d[1] = sin(theta[0]) * (cos(theta[1]) * (a[2] - c[2]) +
-                        sin(theta[1]) * (sin(theta[2]) * (a[1] - c[1]) +
-                        cos(theta[2]) * (a[0] - c[0]))) + cos(theta[0]) *
-                        (cos(theta[2]) * (a[1] - c[1]) - sin(theta[2]) *
-                        (a[0] - c[0]));
-                    d[2] = cos(theta[0]) * (cos(theta[1]) * (a[2] - c[2]) +
-                        sin(theta[1]) * (sin(theta[2]) * (a[1] - c[1]) +
-                        cos(theta[2]) * (a[0] - c[0]))) - sin(theta[0]) *
-                        (cos(theta[2]) * (a[1] - c[1]) - sin(theta[2]) *
-                        (a[0] - c[0]));
-                    return d;
+                    return m;
                 };
 
-                graph.transform = function(a) {
-                    var d = graph.transformD(a);
-                    var x1 = (d[0] - e[0]) * (e[2] / d[2]);
-                    var y1 = (d[1] - e[1]) * (e[2] / d[2]);
-
-                    return [x1, y1];
-                };
-
-                graph.drawPending = false;
-
-                graph.drawIt = function() {
-                    if (!graph.drawPending) {
-                        graph.drawPending = true;
-                        var normalOf = function(face) {
-                            var a = graph.transformD(VERTICES[face.face[0]]);
-                            var b = graph.transformD(VERTICES[face.face[1]]);
-                            var c = graph.transformD(VERTICES[face.face[2]]);
-
-                            var ab = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
-                            var ac = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
-
-                            var normal = [
-                                ab[1] * ac[2] - ab[2] * ac[1],
-                                ab[2] * ac[0] - ab[0] * ac[2],
-                                ab[0] * ac[1] - ab[1] * ac[0]
-                            ];
-
-                            var length = sqrt(normal[0] * normal[0] +
-                                              normal[1] * normal[1] +
-                                              normal[2] * normal[2]);
-
-                            normal[0] /= length;
-                            normal[1] /= length;
-                            normal[2] /= length;
-
-                            return normal[2];
-                        };
-                        var facing = function(face) {
-                            var normal = normalOf(face);
-                            var dot = normal[0] * myNormal[0] +
-                                      normal[1] * myNormal[1] +
-                                      normal[2] * myNormal[2];
-                            return dot;
-                        };
-                        var myNormal = [sin(x) * cos(y), sin(y), cos(x) * cos(y)];
-                        var depthOf = function(face) {
-                            var depth = _.reduce(face.face, function(s, f) {
-                                return s + graph.transformD(VERTICES[f])[2];
-                            }, 0) / face.face.length;
-                            return depth;
-                        };
-                        var sortedFaces = _.sortBy(FACES, normalOf);
-                        var faces = [];
-                        _.each(sortedFaces, function(face) {
-                            if (normalOf(face) > 0) {
-                                faces.push(face);
-                            }
-                        });
-                        var image = raphael.set();
-                        graph.images.push(image);
-                        _.each(FACES[0].face, function(p) {
-                            var pt = VERTICES[p];
-                        });
-                        _.each(faces, function(face) {
-                            var color = Raphael.color(face.color);
-                            <!--color.v *= normalOf(face) / 2 + 0.3;-->
-                            color = Raphael.hsb(color.h, color.s, Math.min(1.0, color.v));
-                            image.push(path(_.map(face.face, function(f) {
-                                return graph.transform(VERTICES[f]);
-                            }),
-                            { fill: color, stroke: color, "stroke-width": 1, opacity: 0 }));
-                        });
-                        var labels = [];
-                        _.each(VERTICES, function(vert, i) {
-                            <!--labels.push(label(graph.transform(vert), i, "center", false));-->
-                        });
-                        graph.labels.push(labels);
-                        image.attr({ opacity: 1.0 });
-
-                        _.defer(function() {
-                            graph.images.shift().remove();
-                            _.each(graph.labels.shift(), function(l) {
-                                l.remove();
-                            });
-                            graph.drawPending = false;
-                        });
+                mult = function(a, b) {
+                    var c = [];
+                    for (var i = 0; i < a.r; ++i) {
+                        c.push([]);
                     }
-
+                    for (var i = 0; i < a.r; ++i) {
+                        for (var j = 0; j < b.c; ++j) {
+                            var temp = 0;
+                            for (var k = 0; k < a.c; ++k) {
+                                temp += a[i][k] * b[k][j];
+                            }
+                            c[i][j] = temp;
+                        }
+                    }
+                    return makeMatrix(c);
                 };
 
                 var x = -PI / 8;
                 var y = -PI / 6;
-                c = [sin(x) * cos(y) * 5, sin(y) * 5, cos(x) * cos(y) * 5];
-                theta[1] = x;
-                theta[0] = -y;
-                graph.drawIt();
+                graph.obj.perspective.pos = [sin(x) * cos(y) * 5, sin(y) * 5, cos(x) * cos(y) * 5];
+                graph.obj.perspective.angle[1] = x;
+                graph.obj.perspective.angle[0] = -y;
+
+                graph.obj.doDraw();
 
                 var mouseTarget = mouselayer.rect(0, 0, 40 * 10, 40 * 10).attr({
                         fill: "#000", opacity: 0.0
@@ -207,17 +80,21 @@
                     graph.startY = event.pageY;
                     graph.origX = x;
                     graph.origY = y;
-                    $(document).bind("vmousemove vmouseup",
-                            function(event) {
+
+                    $(document).bind("vmousemove vmouseup", function(event) {
                         event.preventDefault();
+
                         var dx = event.pageX - graph.startX;
                         var dy = event.pageY - graph.startY;
+
                         x = graph.origX + dx / 200 * PI;
                         y = graph.origY - dy / 200 * PI;
-                        c = [sin(x) * cos(y) * 5, sin(y) * 5, cos(x) * cos(y) * 5];
-                        theta[1] = x;
-                        theta[0] = -y;
-                        graph.drawIt();
+
+                        graph.obj.perspective.pos = [sin(x) * cos(y) * 5, sin(y) * 5, cos(x) * cos(y) * 5];
+                        graph.obj.perspective.angle[1] = x;
+                        graph.obj.perspective.angle[0] = -y;
+
+                        graph.obj.doDraw();
                         if (event.type === "vmouseup") {
                             $(document).unbind("vmousemove vmouseup");
                         }
