@@ -33,7 +33,6 @@ $.extend(KhanUtil, {
         // perform the multiply
         for (var i = 0; i < a.r; ++i) {
             for (var j = 0; j < b.c; ++j) {
-                console.log(j);
                 var temp = 0;
                 for (var k = 0; k < a.c; ++k) {
                     temp += a[i][k] * b[k][j];
@@ -44,5 +43,27 @@ $.extend(KhanUtil, {
 
         // add matrix properties to the result
         return KhanUtil.makeMatrix(c);
+    },
+
+    // convert an array to a column matrix
+    arrayToColumn: function(arr) {
+        var col = [];
+
+        _.each(arr, function(e) {
+            col.push([e]);
+        });
+
+        return KhanUtil.makeMatrix(col);
+    },
+
+    // convert a column matrix to an array
+    columnToArray: function(col) {
+        var arr = [];
+
+        _.each(col, function(e) {
+            arr.push(e[0]);
+        });
+
+        return arr;
     }
 });

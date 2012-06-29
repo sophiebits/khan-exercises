@@ -40,37 +40,32 @@
 
                 graph.obj.setPos([0, 0, 5]);
 
-                var x = -PI / 8;
-                var y = -PI / 6;
-                graph.obj.setPos([sin(x) * cos(y) * 5, sin(y) * 5, cos(x) * cos(y) * 5]);
-                graph.obj.rotate(1,  0, 0, x / 200 * PI);
-                graph.obj.rotate(0, -1, 0, y / 200 * PI);
-
                 graph.obj.doDraw();
 
                 var mouseTarget = mouselayer.rect(0, 0, 40 * 10, 40 * 10).attr({
-                        fill: "#000", opacity: 0.0
-                    });
+                    fill: "#000", opacity: 0.0
+                });
                 $(mouseTarget[0]).bind("vmousedown", function(event) {
-                    graph.startX = event.pageX;
-                    graph.startY = event.pageY;
-                    graph.origX = x;
-                    graph.origY = y;
+                    graph.lastX = event.pageX;
+                    graph.lastY = event.pageY;
 
                     $(document).bind("vmousemove vmouseup", function(event) {
                         event.preventDefault();
 
-                        var dx = event.pageX - graph.startX;
-                        var dy = event.pageY - graph.startY;
+                        var dx = (event.pageX - graph.lastX) / 200 * PI;
+                        var dy = (event.pageY - graph.lastY) / 200 * PI;
 
-                        x = graph.origX + dx / 200 * PI;
-                        y = graph.origY - dy / 200 * PI;
+                        graph.lastX = event.pageX;
+                        graph.lastY = event.pageY;
 
-                        graph.obj.setPos([sin(x) * cos(y) * 5, sin(y) * 5, cos(x) * cos(y) * 5]);
-                        graph.obj.rotate(1,  0, 0, dx / 200 * PI);
-                        graph.obj.rotate(0, -1, 0, dy / 200 * PI);
+                        var xAxis = graph.obj.perspective[1];
+                        var yAxis = graph.obj.perspective[0];
+
+                        graph.obj.rotate(xAxis[0], xAxis[1], xAxis[2], -dx / 2);
+                        graph.obj.rotate(yAxis[0], yAxis[1], yAxis[2], -dy / 2);
 
                         graph.obj.doDraw();
+
                         if (event.type === "vmouseup") {
                             $(document).unbind("vmousemove vmouseup");
                         }

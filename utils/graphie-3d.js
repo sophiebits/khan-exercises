@@ -42,8 +42,8 @@ $.extend(KhanUtil, {
             var c = Math.cos(ang);
 
             var rotation = KhanUtil.makeMatrix([
-                [x*x*(1-c)+c,   x*y*(1-c)-z*s, x*y*(1-c)+y*s, 0],
-                [y*x*(1-c)+z*c, y*y*(1-c)+c,   y*z*(1-c)-x*s, 0],
+                [x*x*(1-c)+c,   x*y*(1-c)-z*s, x*z*(1-c)+y*s, 0],
+                [y*x*(1-c)+z*s, y*y*(1-c)+c,   y*z*(1-c)-x*s, 0],
                 [x*z*(1-c)-y*s, y*z*(1-c)+x*s, z*z*(1-c)+c,   0],
                 [0,             0,             0,             1]
             ]);
@@ -54,30 +54,13 @@ $.extend(KhanUtil, {
         // perform the perspective transformation stored in
         //   object.perspective on a 3d point
         object.doPerspective = function(pt) {
-            //var p = [];
-            var newpt = pt.slice();
+            var newpt = KhanUtil.arrayToColumn(pt);
 
-            newpt[3] = -1;
+            newpt[3] = [-1];
 
-            var p = KhanUtil.matrixMult(this.perspective, pt);
+            var result = KhanUtil.matrixMult(this.perspective, newpt);
 
-            p[0] = Math.cos(ang[1]) * (Math.sin(ang[2]) * (pt[1] - pos[1])
-                 + Math.cos(ang[2]) * (pt[0] - pos[0]))
-                 - Math.sin(ang[1]) * (pt[2] - pos[2]);
-
-            p[1] = Math.sin(ang[0]) * (Math.cos(ang[1]) * (pt[2] - pos[2])
-                 + Math.sin(ang[1]) * (Math.sin(ang[2]) * (pt[1] - pos[1])
-                 + Math.cos(ang[2]) * (pt[0] - pos[0])))
-                 + Math.cos(ang[0]) * (Math.cos(ang[2]) * (pt[1] - pos[1])
-                 - Math.sin(ang[2]) * (pt[0] - pos[0]));
-
-            p[2] = Math.cos(ang[0]) * (Math.cos(ang[1]) * (pt[2] - pos[2])
-                 + Math.sin(ang[1]) * (Math.sin(ang[2]) * (pt[1] - pos[1])
-                 + Math.cos(ang[2]) * (pt[0] - pos[0])))
-                 - Math.sin(ang[0]) * (Math.cos(ang[2]) * (pt[1] - pos[1])
-                 - Math.sin(ang[2]) * (pt[0] - pos[0]));
-
-            return p;
+            return KhanUtil.columnToArray(result).slice(0, 3);
         };
 
         // perform the perspective transformation and then project
@@ -85,10 +68,8 @@ $.extend(KhanUtil, {
         object.doProjection = function(pt) {
             var p = this.doPerspective(pt);
 
-            var offset = this.perspective.offset;
-
-            var x1 = (p[0] - offset[0]) * (offset[2] / p[2]);
-            var y1 = (p[1] - offset[1]) * (offset[2] / p[2]);
+            var x1 = p[0] * (this.scale / p[2]);
+            var y1 = p[1] * (this.scale / p[2]);
 
             return [x1, y1];
         };
