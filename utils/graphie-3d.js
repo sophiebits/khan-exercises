@@ -21,6 +21,11 @@ $.extend(KhanUtil, {
                              v[2] * v[2]);
         };
 
+        // find the dot-product of two 3d vectors
+        var vectorDot = function(a, b) {
+            return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        };
+
         var graph = KhanUtil.currentGraph;
 
         // set and offset the camera pos
@@ -63,6 +68,18 @@ $.extend(KhanUtil, {
             return KhanUtil.columnToArray(result).slice(0, 3);
         };
 
+        // perform the perspective rotation sorted in object.perspective
+        //   on a 3d vector (doesn't perform translation)
+        object.doRotation = function(pt) {
+            var newpt = KhanUtil.arrayToColumn(pt);
+
+            newpt[3] = [0];
+
+            var result = KhanUtil.matrixMult(this.perspective, newpt);
+
+            return KhanUtil.columnToArray(result).slice(0, 3);
+        };
+
         // perform the perspective transformation and then project
         //   the 3d point onto a 2d screen
         object.doProjection = function(pt) {
@@ -86,9 +103,9 @@ $.extend(KhanUtil, {
 
             // compute the normal of a face
             face.normal = function() {
-                var a = object.doPerspective(object.verts[this.verts[0]]);
-                var b = object.doPerspective(object.verts[this.verts[1]]);
-                var c = object.doPerspective(object.verts[this.verts[2]]);
+                var a = object.verts[this.verts[0]];
+                var b = object.verts[this.verts[1]];
+                var c = object.verts[this.verts[2]];
 
                 var ab = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
                 var ac = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
@@ -178,14 +195,10 @@ $.extend(KhanUtil, {
         // draw the object, performing backface culling to ensure
         //   faces don't intersect each other
         object.draw = function() {
-            // sort the faces by how much the faces point backwards
-            var sortedFaces = _.sortBy(this.faces, function(face) {
-                return face.normal()[2];
-            });
-
             // filter out the faces that don't face forwards
-            var drawFaces = _.filter(sortedFaces, function(face) {
-                return face.normal()[2] > 0;
+            var drawFaces = _.filter(object.faces, function(face) {
+                var vert = object.doPerspective(object.verts[face.verts[0]]);
+                return vectorDot(object.doRotation(face.normal()), vert) < 0;
             });
 
             // draw each of the faces, and store it in a raphael set
