@@ -61,6 +61,9 @@
 
                 graph.obj.setPos([0, 0, 5]);
 
+                graph.obj.rotate(1, 0, 0, -PI / 8);
+                graph.obj.rotate(0, 1, 0, PI / 15);
+
                 graph.obj.doDraw();
 
                 var mouseTarget = mouselayer.rect(0, 0, 40 * 10, 40 * 10).attr({
