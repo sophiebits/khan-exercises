@@ -98,7 +98,8 @@ $.extend(KhanUtil, {
                 verts: [],
                 color: "black",
                 lines: [],
-                labels: []
+                labels: [],
+                infront: false
             }, options);
 
             // compute the normal of a face
@@ -158,26 +159,19 @@ $.extend(KhanUtil, {
 
             // draw the face's labels
             face.drawLabels = function() {
-                var set = {};
-
-                set.labels = [];
-                set.remove = function() {
-                    _.each(this.labels, function(label) {
-                        label.remove();
-                    });
-                };
-
                 _.each(this.labels, function(label) {
                     var normal = face.normal();
                     var newpt = [0.2 * normal[0] + label[0][0],
                                  0.2 * normal[1] + label[0][1],
                                  0.2 * normal[2] + label[0][2]];
                     var pt = object.doProjection(newpt);
-                    var label = graph.label(pt, label[1]);
-                    set.labels.push(label);
-                });
 
-                return set;
+                    if (label.label == null) {
+                        label.label = graph.label(pt, label[1]);
+                    } else {
+                        label.label.setPosition(pt);
+                    }
+                });
             };
 
             // draw all the objects on the face and return the set of them all
@@ -186,8 +180,8 @@ $.extend(KhanUtil, {
 
                 set.push(face.path());
                 set.push(face.drawLines());
-                set[2] = set.items[2] = face.drawLabels();
-                set.length++;
+
+                face.drawLabels();
 
                 return set;
             };
@@ -198,6 +192,21 @@ $.extend(KhanUtil, {
                     face.mappedVerts(),
                     { fill: null, stroke: "#666", opacity: 0.1 }
                 );
+            };
+
+            face.toFront = function() {
+                this.infront = true;
+            };
+
+            face.toBack = function() {
+                this.infront = false;
+
+                _.each(this.labels, function(label) {
+                    if (label.label != null) {
+                        label.label.remove();
+                        label.label = null;
+                    }
+                });
             };
 
             this.faces.push(face);
@@ -225,9 +234,11 @@ $.extend(KhanUtil, {
             // draw each of the faces, and store it in a raphael set
             var image = graph.raphael.set();
             _.each(frontFaces, function(face) {
+                face.toFront();
                 image.push(face.draw());
             });
             _.each(backFaces, function(face) {
+                face.toBack();
                 image.push(face.drawBack());
             });
             return image;
