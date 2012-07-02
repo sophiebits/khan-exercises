@@ -140,13 +140,19 @@ $.extend(KhanUtil, {
             };
 
             face.drawLabels = function() {
-                var set = graph.raphael.set();
+                var set = {};
+
+                set.labels = [];
+                set.remove = function() {
+                    _.each(this.labels, function(label) {
+                        label.remove();
+                    });
+                };
 
                 _.each(this.labels, function(label) {
-                    var pt = graph.scalePoint(object.doProjection(label[0]));
-                    var text = graph.raphael.text(pt[0], pt[1], label[1]);
-                    text.attr({ "font-size": 15 });
-                    set.push(text);
+                    var pt = object.doProjection(label[0]);
+                    var label = graph.label(pt, label[1], label[2]);
+                    set.labels.push(label);
                 });
 
                 return set;
@@ -158,7 +164,8 @@ $.extend(KhanUtil, {
 
                 set.push(face.path());
                 set.push(face.drawLines());
-                set.push(face.drawLabels());
+                set[2] = set.items[2] = face.drawLabels();
+                set.length++;
 
                 return set;
             };
