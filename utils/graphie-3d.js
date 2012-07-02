@@ -79,7 +79,9 @@ $.extend(KhanUtil, {
         object.addFace = function(options) {
             var face = $.extend(true, {
                 verts: [],
-                color: "black"
+                color: "black",
+                lines: [],
+                labels: []
             }, options);
 
             // compute the normal of a face
@@ -117,6 +119,50 @@ $.extend(KhanUtil, {
                 );
             };
 
+            // draw the face's lines
+            face.drawLines = function() {
+                var set = graph.raphael.set();
+
+                _.each(this.lines, function(line) {
+                    set.push(
+                        graph.line(
+                            object.doProjection(line[0]),
+                            object.doProjection(line[1]),
+                            {
+                                stroke: "black",
+                                strokeDasharray: ". "
+                            }
+                        )
+                    );
+                });
+
+                return set;
+            };
+
+            face.drawLabels = function() {
+                var set = graph.raphael.set();
+
+                _.each(this.labels, function(label) {
+                    var pt = graph.scalePoint(object.doProjection(label[0]));
+                    var text = graph.raphael.text(pt[0], pt[1], label[1]);
+                    text.attr({ "font-size": 15 });
+                    set.push(text);
+                });
+
+                return set;
+            };
+
+            // draw all the objects on the face and return the set of them all
+            face.draw = function() {
+                var set = graph.raphael.set();
+
+                set.push(face.path());
+                set.push(face.drawLines());
+                set.push(face.drawLabels());
+
+                return set;
+            };
+
             this.faces.push(face);
 
             return this;
@@ -138,7 +184,7 @@ $.extend(KhanUtil, {
             // draw each of the faces, and store it in a raphael set
             var image = graph.raphael.set();
             _.each(drawFaces, function(face) {
-                image.push(face.path());
+                image.push(face.draw());
             });
             return image;
         };

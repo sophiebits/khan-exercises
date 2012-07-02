@@ -19,11 +19,32 @@
                     [0, -0.5, -1]
                 ]</var>
                 <var id="FACES">[
-                    { verts: [0, 2, 1], color: GRAY },
-                    { verts: [3, 4, 5], color: GRAY },
-                    { verts: [0, 1, 4, 3], color: ORANGE },
-                    { verts: [1, 2, 5, 4], color: BLUE },
-                    { verts: [0, 3, 5, 2], color: GREEN }
+                    {
+                        verts: [0, 2, 1],
+                        color: GRAY,
+                        lines: [[[0, -0.5, 1], [1, 0.5, 1]]],
+                        labels: [[[0.15, -0.2, 1], 5]]
+                    }, {
+                        verts: [3, 4, 5],
+                        color: GRAY,
+                        lines: [[[0, -0.5, -1], [0, 0.5, -1]]],
+                        labels: [[[0.1, 0, -1], "5"]]
+                    }, {
+                        verts: [0, 1, 4, 3],
+                        color: ORANGE,
+                        lines: [[[1, 0.5, 0], [-1, 0.5, 0]]],
+                        labels: [[[0, 0.5, 0.1], "5"]]
+                    }, {
+                        verts: [1, 2, 5, 4],
+                        color: BLUE,
+                        lines: [[[0.5, 0, 1], [0.5, 0, -1]]],
+                        labels: [[[0.5, -0.1, 0], "5"]]
+                    }, {
+                        verts: [0, 3, 5, 2],
+                        color: GREEN,
+                        lines: [[[-1, 0.5, 0], [0, -0.5, 0]]],
+                        labels: [[[-0.5, 0, 0.1], "5"]]
+                    }
                 ]</var>
             </div>
             <p class="question">
