@@ -156,6 +156,7 @@ $.extend(KhanUtil, {
                 return set;
             };
 
+            // draw the face's labels
             face.drawLabels = function() {
                 var set = {};
 
@@ -187,6 +188,14 @@ $.extend(KhanUtil, {
                 return set;
             };
 
+            // draw the face in the back, which is just the outline
+            face.drawBack = function() {
+                return graph.path(
+                    face.mappedVerts(),
+                    { fill: null, stroke: "#444", opacity: 0.2 }
+                );
+            };
+
             this.faces.push(face);
 
             return this;
@@ -195,16 +204,27 @@ $.extend(KhanUtil, {
         // draw the object, performing backface culling to ensure
         //   faces don't intersect each other
         object.draw = function() {
-            // filter out the faces that don't face forwards
-            var drawFaces = _.filter(object.faces, function(face) {
+            var frontFaces = [];
+            var backFaces = [];
+
+            // figure out which objects should be drawn in front,
+            // and which in back
+            _.each(object.faces, function(face) {
                 var vert = object.doPerspective(object.verts[face.verts[0]]);
-                return vectorDot(object.doRotation(face.normal()), vert) < 0;
+                if (vectorDot(object.doRotation(face.normal()), vert) < 0) {
+                    frontFaces.push(face);
+                } else {
+                    backFaces.push(face);
+                }
             });
 
             // draw each of the faces, and store it in a raphael set
             var image = graph.raphael.set();
-            _.each(drawFaces, function(face) {
+            _.each(frontFaces, function(face) {
                 image.push(face.draw());
+            });
+            _.each(backFaces, function(face) {
+                image.push(face.drawBack());
             });
             return image;
         };
