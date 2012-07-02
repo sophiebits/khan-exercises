@@ -70,12 +70,22 @@
 
                 graph.obj.doDraw();
 
+                var spinner;
+                setTimeout(function() {
+                    spinner = setInterval(function() {
+                        graph.obj.rotate(0, 1, 0, 0.01);
+                        graph.obj.doDraw();
+                    }, 30);
+                }, 300);
+
                 var mouseTarget = mouselayer.rect(0, 0, 40 * 10, 40 * 10).attr({
                     fill: "#000", opacity: 0.0
                 });
                 $(mouseTarget[0]).bind("vmousedown", function(event) {
                     graph.lastX = event.pageX;
                     graph.lastY = event.pageY;
+
+                    clearInterval(spinner);
 
                     $(document).bind("vmousemove vmouseup", function(event) {
                         event.preventDefault();
