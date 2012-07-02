@@ -168,8 +168,12 @@ $.extend(KhanUtil, {
                 };
 
                 _.each(this.labels, function(label) {
-                    var pt = object.doProjection(label[0]);
-                    var label = graph.label(pt, label[1], label[2]);
+                    var normal = face.normal();
+                    var newpt = [0.2 * normal[0] + label[0][0],
+                                 0.2 * normal[1] + label[0][1],
+                                 0.2 * normal[2] + label[0][2]];
+                    var pt = object.doProjection(newpt);
+                    var label = graph.label(pt, label[1]);
                     set.labels.push(label);
                 });
 
