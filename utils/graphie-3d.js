@@ -196,7 +196,7 @@ $.extend(KhanUtil, {
             face.drawBack = function() {
                 return graph.path(
                     face.mappedVerts(),
-                    { fill: null, stroke: "#444", opacity: 0.2 }
+                    { fill: null, stroke: "#666", opacity: 0.1 }
                 );
             };
 
