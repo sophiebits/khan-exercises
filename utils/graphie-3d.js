@@ -28,6 +28,11 @@ $.extend(KhanUtil, {
 
         var graph = KhanUtil.currentGraph;
 
+        // set the scale
+        object.setScale = function(scale) {
+            object.scale = scale;
+        };
+
         // set and offset the camera pos
         object.offsetPos = function(offset) {
             this.perspective[0][3] += offset[0];

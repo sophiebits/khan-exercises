@@ -16,6 +16,7 @@
                 <var id="DEPTH">randRange(3, 7)</var>
                 <var id="XANGLE">PI / 15</var>
                 <var id="YANGLE">-PI / 8</var>
+                <var id="SCALE">5.0</var>
                 <var id="VERTICES">[
                     [-1, 0.5, 1],
                     [1, 0.5, 1],
@@ -68,6 +69,8 @@
                     });
 
                     graph.obj.setPos([0, 0, 5]);
+
+                    graph.obj.setScale(SCALE);
 
                     graph.obj.rotate(1, 0, 0, YANGLE);
                     graph.obj.rotate(0, 1, 0, XANGLE);
