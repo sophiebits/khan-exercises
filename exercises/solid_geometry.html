@@ -53,6 +53,8 @@
                         labels: [[[-0.5, 0, 0], SIDE]]
                     }
                 ]</var>
+                <var id="GRAPH">{}</var>
+                <var id="UNWRAPGRAPH">{}</var>
             </div>
 
             <p class="question">
@@ -77,11 +79,13 @@
 
                     graph.obj.doDraw();
 
+                    GRAPH = graph;
+
                     var spinner;
                     setTimeout(function() {
                         spinner = setInterval(function() {
-                            graph.obj.rotate(0, 1, 0, 0.01);
-                            graph.obj.doDraw();
+                            GRAPH.obj.rotate(0, 1, 0, 0.01);
+                            GRAPH.obj.doDraw();
                         }, 50);
                     }, 300);
 
@@ -89,27 +93,27 @@
                         fill: "#000", opacity: 0.0
                     });
                     $(mouseTarget[0]).bind("vmousedown", function(event) {
-                        graph.lastX = event.pageX;
-                        graph.lastY = event.pageY;
+                        GRAPH.lastX = event.pageX;
+                        GRAPH.lastY = event.pageY;
 
                         clearInterval(spinner);
 
                         $(document).bind("vmousemove vmouseup", function(event) {
                             event.preventDefault();
 
-                            var dx = (event.pageX - graph.lastX) / 200 * PI;
-                            var dy = (event.pageY - graph.lastY) / 200 * PI;
+                            var dx = (event.pageX - GRAPH.lastX) / 200 * PI;
+                            var dy = (event.pageY - GRAPH.lastY) / 200 * PI;
 
-                            graph.lastX = event.pageX;
-                            graph.lastY = event.pageY;
+                            GRAPH.lastX = event.pageX;
+                            GRAPH.lastY = event.pageY;
 
-                            var xAxis = graph.obj.perspective[1];
-                            var yAxis = graph.obj.perspective[0];
+                            var xAxis = GRAPH.obj.perspective[1];
+                            var yAxis = GRAPH.obj.perspective[0];
 
-                            graph.obj.rotate(xAxis[0], xAxis[1], xAxis[2], -dx / 2);
-                            graph.obj.rotate(yAxis[0], yAxis[1], yAxis[2], -dy / 2);
+                            GRAPH.obj.rotate(xAxis[0], xAxis[1], xAxis[2], -dx / 2);
+                            GRAPH.obj.rotate(yAxis[0], yAxis[1], yAxis[2], -dy / 2);
 
-                            graph.obj.doDraw();
+                            GRAPH.obj.doDraw();
 
                             if (event.type === "vmouseup") {
                                 $(document).unbind("vmousemove vmouseup");
@@ -127,9 +131,9 @@
 
         <div id="int-box-V" data-type="int-tripri-V">
             <div class="vars" data-apply="prependContents">
-                <var id="LENGTH">randRange(1, 7)</var>
-                <var id="WIDTH">randRange(1, 7)</var>
-                <var id="HEIGHT">randRange(1, 7)</var>
+                <var id="LENGTH">randRange(2, 7)</var>
+                <var id="WIDTH">randRange(2, 7)</var>
+                <var id="HEIGHT">randRange(2, 7)</var>
                 <var id="MAX">max(max(LENGTH, WIDTH), HEIGHT)</var>
                 <var id="XBORD">LENGTH/MAX</var>
                 <var id="YBORD">WIDTH/MAX</var>
@@ -146,7 +150,7 @@
                     [-LENGTH/MAX, WIDTH/MAX, HEIGHT/MAX],
                     [-LENGTH/MAX, WIDTH/MAX, -HEIGHT/MAX],
                     [-LENGTH/MAX, -WIDTH/MAX, -HEIGHT/MAX],
-                    [-LENGTH/MAX, -WIDTH/MAX, HEIGHT/MAX],
+                    [-LENGTH/MAX, -WIDTH/MAX, HEIGHT/MAX]
                 ]</var>
                 <var id="SCALE">4.0</var>
                 <var id="FACES">[
@@ -194,6 +198,216 @@
 
             <div class="solution">
                 <var>2 * LENGTH * WIDTH + 2 * LENGTH * HEIGHT + 2 * WIDTH * HEIGHT</var>
+            </div>
+
+            <div class="hints">
+                <p>To find the surface area, try looking at the areas of each of the faces, and adding them up.</p>
+                <div>
+                    <p>To see this better, let's try unwrapping the box:
+                    <input type="submit" value="Unwrap!" onclick="KhanUtil.tmpl.getVAR('UNWRAPGRAPH.unwrap()')" /></p>
+                    <div class="graphie">
+                        var verts = [
+                            [LENGTH/MAX, WIDTH/MAX, HEIGHT/MAX],
+                            [LENGTH/MAX, WIDTH/MAX, -HEIGHT/MAX],
+                            [LENGTH/MAX, -WIDTH/MAX, -HEIGHT/MAX],
+                            [LENGTH/MAX, -WIDTH/MAX, HEIGHT/MAX],
+                            [-LENGTH/MAX, WIDTH/MAX, HEIGHT/MAX],
+                            [-LENGTH/MAX, WIDTH/MAX, -HEIGHT/MAX],
+                            [-LENGTH/MAX, -WIDTH/MAX, -HEIGHT/MAX],
+                            [-LENGTH/MAX, -WIDTH/MAX, HEIGHT/MAX],
+                            [LENGTH/MAX, WIDTH/MAX, HEIGHT/MAX],
+                            [LENGTH/MAX, -WIDTH/MAX, HEIGHT/MAX],
+                            [-LENGTH/MAX, WIDTH/MAX, HEIGHT/MAX],
+                            [-LENGTH/MAX, -WIDTH/MAX, HEIGHT/MAX],
+                            [LENGTH/MAX, WIDTH/MAX, HEIGHT/MAX],
+                            [-LENGTH/MAX, WIDTH/MAX, HEIGHT/MAX]
+                        ];
+
+                        var faces = [
+                            {
+                                verts: [5, 6, 2, 1],
+                                color: GREEN
+                            }, {
+                                verts: [4, 5, 1, 0],
+                                color: GRAY
+                            }, {
+                                verts: [6, 7, 3, 2],
+                                color: GRAY
+                            }, {
+                                verts: [1, 2, 9, 8],
+                                color: BLUE
+                            }, {
+                                verts: [6, 5, 10, 11],
+                                color: BLUE
+                            }, {
+                                verts: [13, 12, 3, 7],
+                                color: GREEN
+                            }, {
+                                verts: [0, 1, 5, 4],
+                                color: GRAY
+                            }, {
+                                verts: [11, 10, 5, 6],
+                                color: BLUE
+                            }, {
+                                verts: [7, 3, 12, 13],
+                                color: GREEN
+                            }
+                        ];
+
+                        var size = max(2 * WIDTH + 2 * LENGTH, HEIGHT + 2 * WIDTH);
+                        init({range: [[-size, size], [-size, size]], scale: [200 / size, 200 / size]});
+
+                        graph.obj = makeObject(verts);
+                        _.each(faces, function(face) {
+                            graph.obj.addFace(face);
+                        });
+
+                        graph.obj.setPos([0, 0, 5]);
+
+                        graph.obj.rotate(1, 0, 0, PI / 8);
+                        graph.obj.rotate(0, 1, 0, PI / 10);
+
+                        graph.obj.setScale(size * 1.3);
+
+                        graph.obj.doDraw();
+
+                        UNWRAPGRAPH = graph;
+                        UNWRAPGRAPH.unwrapped = false;
+
+                        graph.unwrap = function() {
+                            if (UNWRAPGRAPH.unwrapped) {
+                                return;
+                            }
+
+                            UNWRAPGRAPH.unwrapped = true;
+
+                            $({ t: 0 }).animate({ t: PI },
+                            {
+                                duration: 3000,
+                                easing: "linear",
+                                step: function(now, fx) {
+                                    verts[4][2] = cos(now) * HEIGHT / MAX;
+                                    verts[0][2] = cos(now) * HEIGHT / MAX;
+
+                                    verts[4][1] = WIDTH / MAX + 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+                                    verts[0][1] = WIDTH / MAX + 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+
+                                    verts[3][2] = cos(now) * HEIGHT / MAX;
+                                    verts[7][2] = cos(now) * HEIGHT / MAX;
+
+                                    verts[3][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+                                    verts[7][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+
+                                    verts[8][2] = cos(now) * HEIGHT / MAX;
+                                    verts[9][2] = cos(now) * HEIGHT / MAX;
+
+                                    verts[8][0] = LENGTH / MAX + 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+                                    verts[9][0] = LENGTH / MAX + 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+
+                                    verts[10][2] = cos(now) * HEIGHT / MAX;
+                                    verts[11][2] = cos(now) * HEIGHT / MAX;
+
+                                    verts[10][0] = -LENGTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+                                    verts[11][0] = -LENGTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+
+                                    verts[12][2] = cos(now) * HEIGHT / MAX + 2 * sin(now) * WIDTH / MAX;
+                                    verts[13][2] = cos(now) * HEIGHT / MAX + 2 * sin(now) * WIDTH / MAX;
+
+                                    verts[12][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX + 2 * cos(now) * WIDTH / MAX;
+                                    verts[13][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX + 2 * cos(now) * WIDTH / MAX;
+
+                                    UNWRAPGRAPH.obj.doDraw();
+                                },
+                                complete: function() {
+                                    var last = 0;
+                                    $({ t: 0 }).animate({ t: 1 },
+                                    {
+                                        duration: 1000,
+                                        easing: "linear",
+                                        step: function(now, fx) {
+                                            console.log(now);
+                                            UNWRAPGRAPH.obj.rotate(1, 0, 0, -PI / 8 * (now - last));
+                                            UNWRAPGRAPH.obj.rotate(0, 1, 0, -PI / 6 * (now - last));
+
+                                            last = now;
+                                        }
+                                    });
+                                }
+                            });
+                        };
+                    </div>
+                </div>
+                <div>
+                    <p>We can group the faces together based on size and color:</p>
+                    <div class="graphie">
+                        var width = WIDTH + 2 + LENGTH + 2 + HEIGHT + 2;
+                        var height = max(max(WIDTH, LENGTH), HEIGHT) + 1;
+                        init({range: [[-1, width + 1], [-1, height + 1]], scale: [400 / width, 400 / width]});
+
+                        path([[0, 0],
+                              [0, WIDTH],
+                              [HEIGHT, WIDTH],
+                              [HEIGHT, 0],
+                              true],
+                             { stroke: "black", strokeWidth: 1, fill: BLUE });
+                        path([[1, 1],
+                              [1, 1 + WIDTH],
+                              [1 + HEIGHT, 1 + WIDTH],
+                              [1 + HEIGHT, 1],
+                              true],
+                             { stroke: "black", strokeWidth: 1, fill: BLUE });
+                        label([1 + HEIGHT / 2 - 0.2, WIDTH + 1 + 0.2], HEIGHT, "below");
+                        label([1 + HEIGHT + 0.1, 1 + WIDTH / 2], WIDTH, "left");
+
+                        path([[HEIGHT + 2, 0],
+                              [HEIGHT + 2, LENGTH],
+                              [HEIGHT + 2 + WIDTH, LENGTH],
+                              [HEIGHT + 2 + WIDTH, 0],
+                              true],
+                             { stroke: "black", strokeWidth: 1, fill: GREEN });
+                        path([[1 + HEIGHT + 2, 1],
+                              [1 + HEIGHT + 2, 1 + LENGTH],
+                              [1 + HEIGHT + 2 + WIDTH, 1 + LENGTH],
+                              [1 + HEIGHT + 2 + WIDTH, 1],
+                              true],
+                             { stroke: "black", strokeWidth: 1, fill: GREEN });
+                        label([3 + HEIGHT + WIDTH / 2 - 0.2, 1 + LENGTH + 0.2], WIDTH, "below");
+                        label([1 + HEIGHT + 2 + WIDTH + 0.1, 1 + LENGTH / 2], LENGTH, "left");
+
+                        path([[4 + HEIGHT + WIDTH, 0],
+                              [4 + HEIGHT + WIDTH, HEIGHT],
+                              [4 + HEIGHT + WIDTH + LENGTH, HEIGHT],
+                              [4 + HEIGHT + WIDTH + LENGTH, 0],
+                              true],
+                             { stroke: "black", strokeWidth: 1, fill: GRAY });
+                        path([[1 + 4 + HEIGHT + WIDTH, 1],
+                              [1 + 4 + HEIGHT + WIDTH, 1 + HEIGHT],
+                              [1 + 4 + HEIGHT + WIDTH + LENGTH, 1 + HEIGHT],
+                              [1 + 4 + HEIGHT + WIDTH + LENGTH, 1],
+                              true],
+                             { stroke: "black", strokeWidth: 1, fill: GRAY });
+                        label([5 + HEIGHT + WIDTH + LENGTH / 2 - 0.2, 1 + HEIGHT + 0.2], LENGTH, "below");
+                        label([5 + HEIGHT + WIDTH + LENGTH + 0.1, 1 + HEIGHT / 2], HEIGHT, "left");
+                    </div>
+                </div>
+                <div>
+                    <p>We can calculate the area of each of the pieces now:</p>
+                    <code>\Large{2 \left(<var>WIDTH</var> \times <var>HEIGHT</var>\right) +
+                        2 \left(<var>LENGTH</var> \times <var>WIDTH</var>\right) +
+                        2 \left(<var>HEIGHT</var> \times <var>LENGTH</var>\right)}</code>
+                </div>
+                <p>
+                    <code>\Large{= <var>2 * WIDTH * HEIGHT</var> +
+                                 <var>2 * LENGTH * WIDTH</var> +
+                                 <var>2 * HEIGHT * LENGTH</var>}</code>
+                </p>
+                <p>
+                    <code>\Large{= <var>2 * WIDTH * HEIGHT + 2 * LENGTH * WIDTH + 2 * HEIGHT * LENGTH</var>}</code>
+                </p>
+                <p>
+                    Thus, the total surface area of the box is
+                    <code><var>2 * WIDTH * HEIGHT + 2 * LENGTH * WIDTH + 2 * HEIGHT * LENGTH</var></code>.
+                </p>
             </div>
         </div>
 
@@ -302,5 +516,6 @@
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>
