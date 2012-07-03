@@ -14,8 +14,8 @@
                 <var id="BASE">HEIGHT * 2</var>
                 <var id="SIDE">"" + HEIGHT + "\\sqrt{2}"</var>
                 <var id="DEPTH">randRange(3, 7)</var>
-                <var id="XANGLE">-PI / 8</var>
-                <var id="YANGLE">PI / 15</var>
+                <var id="XANGLE">PI / 15</var>
+                <var id="YANGLE">-PI / 8</var>
                 <var id="VERTICES">[
                     [-1, 0.5, 1],
                     [1, 0.5, 1],
@@ -69,8 +69,8 @@
 
                     graph.obj.setPos([0, 0, 5]);
 
-                    graph.obj.rotate(1, 0, 0, XANGLE);
-                    graph.obj.rotate(0, 1, 0, YANGLE);
+                    graph.obj.rotate(1, 0, 0, YANGLE);
+                    graph.obj.rotate(0, 1, 0, XANGLE);
 
                     graph.obj.doDraw();
 
@@ -125,8 +125,8 @@
         <div id="int-cube-V" data-type="int-tripri-V">
             <div class="vars">
                 <var id="SIDE">randRange(1, 7)</var>
-                <var id="XANGLE">-PI / 8</var>
-                <var id="YANGLE">PI / 15</var>
+                <var id="YANGLE">-PI / 8</var>
+                <var id="XANGLE">0</var>
                 <var id="VERTICES">[
                     [1, 1, 1],
                     [1, 1, -1],
@@ -169,6 +169,20 @@
             <p class="question">
                 What is the volume of this cube?
             </p>
+
+            <div class="solution" data-type="decimal">
+                <var>SIDE * SIDE * SIDE</var>
+            </div>
+        </div>
+
+        <div id="int-cube-T" data-type="int-cube-V">
+            <p class="question">
+                What is the surface area of this cube?
+            </p>
+
+            <div class="solution" data-type="decimal">
+                <var>6 * SIDE * SIDE</var>
+            </div>
         </div>
 
         <div id="cube-V">
