@@ -8,12 +8,14 @@
 <body>
 <div class="exercise">
     <div class="problems">
-        <div id="interactive">
+        <div id="int-tripri-V">
             <div class="vars">
                 <var id="HEIGHT">randRange(2, 5)</var>
                 <var id="BASE">HEIGHT * 2</var>
                 <var id="SIDE">"" + HEIGHT + "\\sqrt{2}"</var>
                 <var id="DEPTH">randRange(3, 7)</var>
+                <var id="XANGLE">-PI / 8</var>
+                <var id="YANGLE">PI / 15</var>
                 <var id="VERTICES">[
                     [-1, 0.5, 1],
                     [1, 0.5, 1],
@@ -51,66 +53,122 @@
                     }
                 ]</var>
             </div>
+
             <p class="question">
-                What is the volume of this thing:
+                What is the volume of this object? Drag on the object to rotate it.
             </p>
-            <div class="graphie">
-                init({range: [[-2, 2], [-2, 2]], scale: [100, 100]});
-                addMouseLayer();
+            <div class="problem">
+                <div class="graphie">
+                    init({range: [[-2, 2], [-2, 2]], scale: [100, 100]});
+                    addMouseLayer();
 
-                graph.obj = makeObject(VERTICES);
-                _.each(FACES, function(face) {
-                    graph.obj.addFace(face);
-                });
+                    graph.obj = makeObject(VERTICES);
+                    _.each(FACES, function(face) {
+                        graph.obj.addFace(face);
+                    });
 
-                graph.obj.setPos([0, 0, 5]);
+                    graph.obj.setPos([0, 0, 5]);
 
-                graph.obj.rotate(1, 0, 0, -PI / 8);
-                graph.obj.rotate(0, 1, 0, PI / 15);
+                    graph.obj.rotate(1, 0, 0, XANGLE);
+                    graph.obj.rotate(0, 1, 0, YANGLE);
 
-                graph.obj.doDraw();
+                    graph.obj.doDraw();
 
-                var spinner;
-                setTimeout(function() {
-                    spinner = setInterval(function() {
-                        graph.obj.rotate(0, 1, 0, 0.01);
-                        graph.obj.doDraw();
-                    }, 30);
-                }, 300);
+                    var spinner;
+                    setTimeout(function() {
+                        spinner = setInterval(function() {
+                            graph.obj.rotate(0, 1, 0, 0.01);
+                            graph.obj.doDraw();
+                        }, 50);
+                    }, 300);
 
-                var mouseTarget = mouselayer.rect(0, 0, 40 * 10, 40 * 10).attr({
-                    fill: "#000", opacity: 0.0
-                });
-                $(mouseTarget[0]).bind("vmousedown", function(event) {
-                    graph.lastX = event.pageX;
-                    graph.lastY = event.pageY;
-
-                    clearInterval(spinner);
-
-                    $(document).bind("vmousemove vmouseup", function(event) {
-                        event.preventDefault();
-
-                        var dx = (event.pageX - graph.lastX) / 200 * PI;
-                        var dy = (event.pageY - graph.lastY) / 200 * PI;
-
+                    var mouseTarget = mouselayer.rect(0, 0, 40 * 10, 40 * 10).attr({
+                        fill: "#000", opacity: 0.0
+                    });
+                    $(mouseTarget[0]).bind("vmousedown", function(event) {
                         graph.lastX = event.pageX;
                         graph.lastY = event.pageY;
 
-                        var xAxis = graph.obj.perspective[1];
-                        var yAxis = graph.obj.perspective[0];
+                        clearInterval(spinner);
 
-                        graph.obj.rotate(xAxis[0], xAxis[1], xAxis[2], -dx / 2);
-                        graph.obj.rotate(yAxis[0], yAxis[1], yAxis[2], -dy / 2);
+                        $(document).bind("vmousemove vmouseup", function(event) {
+                            event.preventDefault();
 
-                        graph.obj.doDraw();
+                            var dx = (event.pageX - graph.lastX) / 200 * PI;
+                            var dy = (event.pageY - graph.lastY) / 200 * PI;
 
-                        if (event.type === "vmouseup") {
-                            $(document).unbind("vmousemove vmouseup");
-                        }
-                    })
-                });
+                            graph.lastX = event.pageX;
+                            graph.lastY = event.pageY;
 
+                            var xAxis = graph.obj.perspective[1];
+                            var yAxis = graph.obj.perspective[0];
+
+                            graph.obj.rotate(xAxis[0], xAxis[1], xAxis[2], -dx / 2);
+                            graph.obj.rotate(yAxis[0], yAxis[1], yAxis[2], -dy / 2);
+
+                            graph.obj.doDraw();
+
+                            if (event.type === "vmouseup") {
+                                $(document).unbind("vmousemove vmouseup");
+                            }
+                        })
+                    });
+
+                </div>
             </div>
+
+            <div class="solution" data-type="decimal">
+                <var>DEPTH * BASE * HEIGHT / 2</var>
+            </div>
+        </div>
+
+        <div id="int-cube-V" data-type="int-tripri-V">
+            <div class="vars">
+                <var id="SIDE">randRange(1, 7)</var>
+                <var id="XANGLE">-PI / 8</var>
+                <var id="YANGLE">PI / 15</var>
+                <var id="VERTICES">[
+                    [1, 1, 1],
+                    [1, 1, -1],
+                    [1, -1, -1],
+                    [1, -1, 1],
+                    [-1, 1, 1],
+                    [-1, 1, -1],
+                    [-1, -1, -1],
+                    [-1, -1, 1],
+                ]</var>
+                <var id="FACES">[
+                    {
+                        verts: [3, 2, 1, 0],
+                        color: BLUE,
+                        labels: [[[1, 0, 1], SIDE]]
+                    }, {
+                        verts: [4, 5, 6, 7],
+                        color: BLUE,
+                        labels: [[[-1, 0, -1], SIDE]]
+                    }, {
+                        verts: [0, 1, 5, 4],
+                        color: GRAY,
+                        labels: [[[-1, 1, 0], SIDE]]
+                    }, {
+                        verts: [2, 3, 7, 6],
+                        color: GRAY,
+                        labels: [[[-1, -1, 0], SIDE]]
+                    }, {
+                        verts: [1, 2, 6, 5],
+                        color: GREEN,
+                        labels: [[[0, -1, -1], SIDE]]
+                    }, {
+                        verts: [3, 0, 4, 7],
+                        color: GREEN,
+                        labels: [[[0, 1, 1], SIDE]]
+                    }
+                ]</var>
+            </div>
+
+            <p class="question">
+                What is the volume of this cube?
+            </p>
         </div>
 
         <div id="cube-V">
