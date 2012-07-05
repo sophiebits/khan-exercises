@@ -51,6 +51,7 @@ $.extend(KhanUtil, {
             var s = Math.sin(ang);
             var c = Math.cos(ang);
 
+            // stolen from the OpenGL glRotate man page
             var rotation = KhanUtil.makeMatrix([
                 [x*x*(1-c)+c,   x*y*(1-c)-z*s, x*z*(1-c)+y*s, 0],
                 [y*x*(1-c)+z*s, y*y*(1-c)+c,   y*z*(1-c)-x*s, 0],
