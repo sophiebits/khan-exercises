@@ -319,8 +319,11 @@
                                     verts[12][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX + 2 * cos(now) * WIDTH / MAX;
                                     verts[13][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX + 2 * cos(now) * WIDTH / MAX;
 
-                                    //UNWRAPGRAPH.obj.rotate(1, 0, 0, -1 / 8 * (now - last));
-                                    //UNWRAPGRAPH.obj.rotate(0, 1, 0, -1 / 10 * (now - last));
+                                    if (now < PI / 2) {
+                                        UNWRAPGRAPH.obj.rotate(0, 1, 0, -2 / 10 * (now - last));
+                                    } else {
+                                        UNWRAPGRAPH.obj.rotate(1, 0, 0, -2 / 8 * (now - last));
+                                    }
 
                                     last = now;
 
