@@ -65,14 +65,12 @@
                     init({range: [[-2, 2], [-2, 2]], scale: [100, 100]});
                     addMouseLayer();
 
-                    graph.obj = makeObject(VERTICES);
+                    graph.obj = makeObject(VERTICES, { scale: SCALE });
                     _.each(FACES, function(face) {
                         graph.obj.addFace(face);
                     });
 
                     graph.obj.setPos([0, 0, 5]);
-
-                    graph.obj.setScale(SCALE);
 
                     graph.obj.rotate(1, 0, 0, YANGLE);
                     graph.obj.rotate(0, 1, 0, XANGLE);

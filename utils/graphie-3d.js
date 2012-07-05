@@ -1,8 +1,8 @@
 $.extend(KhanUtil, {
     // make a 3d object, which holds the vertices,
     //   faces, and perspective of an object
-    makeObject: function(verts) {
-        var object = {
+    makeObject: function(verts, options) {
+        var object = $.extend({
             verts: verts,
             perspective: KhanUtil.makeMatrix([
                 [1, 0, 0, 0],
@@ -12,7 +12,7 @@ $.extend(KhanUtil, {
             ]),
             scale: 5.0,
             faces: []
-        };
+        }, options);
 
         // find the length of a 3d vector
         var vectorLength = function(v) {
