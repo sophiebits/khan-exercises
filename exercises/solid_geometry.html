@@ -138,6 +138,47 @@
             <div class="solution" data-type="decimal">
                 <var>DEPTH * BASE * HEIGHT / 2</var>
             </div>
+
+            <div class="hints">
+                <p>The volume of a prism is the area of the base <code>\times</code> depth.</p>
+                <p>In this object, one of the triangles is the base.</p>
+                <p>We know the area of a triangle is <code>\frac{1}{2}\ \text{base} \times \text{height}</code>.</p>
+                <div>
+                    <p>Orient the triangle like this, and find the base and height from the object:</p>
+                    <div class="graphie" id="triangle">
+                        init({ range: [[-2, 2], [-1.2, 1.2]], scale: [100, 100] });
+
+                        path([[-1.5, -0.75], [1.5, -0.75], [0, 0.75], true],
+                            { stroke: "black", strokeWidth: 1, fill: GRAY });
+
+                        path([[0, -0.75], [0, 0.75]],
+                            { stroke: "black", strokeDasharray: ". " });
+
+                        graph.label1 = label([0, 0], "?", "right");
+                        graph.label2 = label([-0.4, -0.75], "?", "below");
+                    </div>
+                </div>
+                <div>
+                    <p>From the object, we find that the base of the triangle
+                        is <code><var>BASE</var></code> and the height is
+                        <code><var>HEIGHT</var></code>.</p>
+                    <div class="graphie" data-update="triangle">
+                        graph.label1.remove();
+                        graph.label2.remove();
+
+                        label([0, 0], HEIGHT, "right");
+                        label([-0.4, -0.75], BASE, "below");
+                    </div>
+                </div>
+                <p>The area of the triangle is then
+                    <code>\frac{1}{2}<var>BASE</var> \times <var>HEIGHT</var>
+                    = <var>BASE * HEIGHT / 2</var></code>.</p>
+                <p>From the object, we can then find that the depth is
+                    <code><var>DEPTH</var></code>.</p>
+                <p>Then, the final volume is
+                    <code><var>BASE * HEIGHT / 2</var> \times <var>DEPTH</var>
+                        = <var>BASE * HEIGHT * DEPTH / 2</var>.</code>
+            </div>
         </div>
 
         <div id="int-box-V" data-type="int-tripri-V">
