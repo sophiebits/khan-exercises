@@ -100,7 +100,7 @@
                         }, 50);
                     }, 300);
 
-                    var mouseTarget = mouselayer.rect(0, 0, 40 * 10, 40 * 10).attr({
+                    var mouseTarget = mouselayer.rect(0, 0, 400, 400).attr({
                         fill: "#000", opacity: 0.0
                     });
                     $(mouseTarget[0]).bind("vmousedown", function(event) {
@@ -416,10 +416,18 @@
                         </div>
                     </div>
                     <div>
-                        <p>We can calculate the area of each of the pieces now:</p>
-                        <code>\Large{2 \left(<var>WIDTH</var> \times <var>HEIGHT</var>\right) +
-                            2 \left(<var>LENGTH</var> \times <var>WIDTH</var>\right) +
-                            2 \left(<var>HEIGHT</var> \times <var>LENGTH</var>\right)}</code>
+                        <p>We can calculate the area of each
+                            of the pieces now:</p>
+                        <code>
+                            \Large{
+                                2 \left(<var>WIDTH</var> \times
+                                    <var>HEIGHT</var>\right) +
+                                2 \left(<var>LENGTH</var> \times
+                                    <var>WIDTH</var>\right) +
+                                2 \left(<var>HEIGHT</var> \times
+                                <var>LENGTH</var>\right)
+                            }
+                        </code>
                     </div>
                     <p>
                         <code>\Large{= <var>2 * WIDTH * HEIGHT</var> +
@@ -427,11 +435,19 @@
                                      <var>2 * HEIGHT * LENGTH</var>}</code>
                     </p>
                     <p>
-                        <code>\Large{= <var>2 * WIDTH * HEIGHT + 2 * LENGTH * WIDTH + 2 * HEIGHT * LENGTH</var>}</code>
+                    <code>
+                        \Large{=
+                            <var>2 * WIDTH * HEIGHT +
+                            2 * LENGTH * WIDTH +
+                            2 * HEIGHT * LENGTH</var>
+                        }
+                    </code>
                     </p>
                     <p>
                         Thus, the total surface area of the box is
-                        <code><var>2 * WIDTH * HEIGHT + 2 * LENGTH * WIDTH + 2 * HEIGHT * LENGTH</var></code>.
+                        <code><var>2 * WIDTH * HEIGHT +
+                                2 * LENGTH * WIDTH +
+                                2 * HEIGHT * LENGTH</var></code>.
                     </p>
                 </div>
             </div>
@@ -479,31 +495,36 @@
             </div>
 
             <p class="question">
-                What is the surface area of this cube? Drag on the cube to rotate it.
+                What is the surface area of this cube?
+                Drag on the cube to rotate it.
             </p>
 
             <div class="hints" data-apply="appendContents">
                 <div id="unwrapped" data-unwrap>
-                    <p>Here, we can see that all of the six sides have the same size.</p>
+                    <p>Here, we can see that all of the
+                        six sides have the same size.</p>
                     <div>
-                        To find the total area, we can just group the sides together.
+                        To find the total area,
+                        we can just group the sides together.
                         <div class="graphie">
                             var width = WIDTH + 5;
                             var height = WIDTH + 2;
-                            init({range: [[-1, width + 1], [-1, height + 1]], scale: [300 / width, 300 / width]});
+                            init({range: [[-1, width + 1], [-1, height + 1]],
+                                scale: [300 / width, 300 / width]});
 
                             var colors = [GRAY, GRAY, BLUE, BLUE, GREEN, GREEN];
 
                             for (var i = 0; i < 6; ++i) {
                                 makeSquare(i, HEIGHT, i / 3, WIDTH, colors[i]);
                             }
-                            label([5 + WIDTH / 2 - 0.2, 5 / 3 + WIDTH + 0.1], WIDTH, "below");
-                            label([5 + WIDTH, 5 / 3 + WIDTH / 2], WIDTH, "left");
+                            label([4.8 + WIDTH / 2, 1.76 + WIDTH], WIDTH, "below");
+                            label([5 + WIDTH, 1.66 + WIDTH / 2], WIDTH, "left");
                         </div>
                     </div>
                     <div>
                         <p>We can now calculate the total area:</p>
-                        <code>\Large{6 \left(<var>WIDTH</var> \times <var>WIDTH</var>\right)}</code>
+                        <code>\Large{6 \left(<var>WIDTH</var> \times
+                            <var>WIDTH</var>\right)}</code>
                     </div>
                     <p>
                         <code>\Large{6 \times <var>WIDTH * WIDTH</var>}</code>
@@ -521,40 +542,56 @@
 
         <div id="cylinder-V">
             <div class="vars">
-                <var id="r">randRange( 2, 4 )</var>
-                <var id="h">randRange( 5, 9 )</var>
+                <var id="r">randRange(2, 4)</var>
+                <var id="h">randRange(5, 9)</var>
             </div>
 
             <div class="question">
-                <p>What is the volume of a cylinder with base radius <code><var>r</var></code> and height <code><var>h</var></code>?</p>
+                <p>What is the volume of a cylinder with base radius
+                    <code><var>r</var></code> and height
+                    <code><var>h</var></code>?</p>
 
                 <div class="graphie">
                     init({
-                        range: [ [-1, 4], [-2, 4] ]
+                        range: [[-1, 4], [-2, 4]]
                     });
 
-                    arc( [1.5, 3], [1.5, 0.4], 0, 48 );
-                    arc( [1.5, 3], [1.5, 0.4], 70, 360 );
-                    path([ [0, -1], [0, 3] ]);
-                    path([ [3, -1], [3, 3] ]);
-                    arc( [1.5, -1], [1.5, 0.4], 0, 180, {
+                    arc([1.5, 3], [1.5, 0.4], 0, 48 );
+                    arc([1.5, 3], [1.5, 0.4], 70, 360 );
+                    path([[0, -1], [0, 3]]);
+                    path([[3, -1], [3, 3]]);
+                    arc([1.5, -1], [1.5, 0.4], 0, 180, {
                         strokeDasharray: "- "
-                    } );
-                    arc( [1.5, -1], [1.5, 0.4], 180, 360 );
+                    });
+                    arc([1.5, -1], [1.5, 0.4], 180, 360);
 
-                    path([ [1.5, 3], [3, 3] ]);
-                    label( [2.25, 3], r, "above" );
-                    label( [3, 1], h, "right" );
+                    path([[1.5, 3], [3, 3]]);
+                    label([2.25, 3], r, "above");
+                    label([3, 1], h, "right");
                 </div>
             </div>
 
             <div class="solution" data-type="multiple">
-                <p><span class="sol" data-forms="pi"><var>Math.PI * r * r * h</var></span> Cubic Units</p>
+                <p>
+                    <span class="sol" data-forms="pi">
+                        <var>Math.PI * r * r * h</var>
+                    </span>
+                    Cubic Units
+                </p>
             </div>
 
             <div class="hints">
-                <p>The area of the base is simply the area of a circle: <code>\pi r^2 = \pi \cdot <var>r</var>^2 = <var>r * r</var> \pi</code>.</p>
-                <p>The volume of the cylinder is the area of the base times the height: <code>B \cdot h = <var>r * r</var>\pi \cdot <var>h</var> = <var>r * r * h</var>\pi</code>.</p>
+                <p>
+                    The area of the base is simply the area of a circle:
+                    <code>\pi r^2 = \pi \cdot <var>r</var>^2 =
+                        <var>r * r</var> \pi</code>.
+                </p>
+                <p>
+                    The volume of the cylinder is the area of the base
+                    times the height:
+                    <code>B \cdot h = <var>r * r</var>\pi \cdot <var>h</var>
+                        = <var>r * r * h</var>\pi</code>.
+                </p>
             </div>
         </div>
 
@@ -569,34 +606,62 @@
 
                 <div class="graphie">
                     init({
-                        range: [ [-1, 4], [-2, 4] ]
+                        range: [[-1, 4], [-2, 4]]
                     });
 
-                    arc( [1.5, 3], [1.5, 0.4], 0, 48 );
-                    arc( [1.5, 3], [1.5, 0.4], 70, 360 );
-                    path([ [0, -1], [0, 3] ]);
-                    path([ [3, -1], [3, 3] ]);
-                    arc( [1.5, -1], [1.5, 0.4], 0, 180, {
+                    arc([1.5, 3], [1.5, 0.4], 0, 48);
+                    arc([1.5, 3], [1.5, 0.4], 70, 360);
+                    path([[0, -1], [0, 3]]);
+                    path([[3, -1], [3, 3]]);
+                    arc([1.5, -1], [1.5, 0.4], 0, 180, {
                         strokeDasharray: "- "
-                    } );
-                    arc( [1.5, -1], [1.5, 0.4], 180, 360 );
+                    });
+                    arc([1.5, -1], [1.5, 0.4], 180, 360);
 
-                    path([ [1.5, 3], [3, 3] ]);
-                    label( [2.25, 3], r, "above" );
-                    label( [3, 1], h, "right" );
+                    path([[1.5, 3], [3, 3]]);
+                    label([2.25, 3], r, "above");
+                    label([3, 1], h, "right");
                 </div>
             </div>
 
             <div class="solution" data-type="multiple">
-                <p><span class="sol" data-forms="pi"><var>Math.PI * 2 * r * ( r + h )</var></span> Square Units</p>
+                <p>
+                    <span class="sol" data-forms="pi">
+                        <var>Math.PI * 2 * r * ( r + h )</var>
+                    </span>
+                    Square Units
+                </p>
             </div>
 
             <div class="hints">
-                <p>The areas of the top and the base are simply the area of a circle: <code>\pi r^2 = \pi \cdot <var>r</var>^2 = <var>r * r</var> \pi</code>.</p>
-                <p>The lateral surface area is the same as the area of a rectangle with height <code><var>h</var></code> and width equal to the circumference of the base.</p>
-                <p>That circumference is <code>2 \pi r = 2\pi \cdot <var>r</var> = <var>2 * r</var>\pi</code>.</p>
-                <p>Thus, the lateral surface area is <code>wh = <var>2 * r</var> \pi \cdot <var>h</var> = <var>2 * r * h</var> \pi</code>.</p>
-                <p>The total surface area is <code><var>r * r</var> \pi + <var>r * r</var> \pi + <var>2 * r * h</var> \pi = <var>2 * r * ( r + h )</var>\pi</code>.</p>
+                <p>
+                    The areas of the top and the base are simply the
+                    area of a circle:
+                    <code>\pi r^2 = \pi \cdot <var>r</var>^2 =
+                        <var>r * r</var> \pi</code>.
+                </p>
+                <p>
+                    The lateral surface area is the same as the
+                    area of a rectangle with height
+                    <code><var>h</var></code>
+                    and width equal to the circumference of the base.
+                </p>
+                <p>
+                    That circumference is
+                    <code>2 \pi r = 2\pi \cdot <var>r</var> =
+                        <var>2 * r</var>\pi</code>.
+                </p>
+                <p>
+                    Thus, the lateral surface area is
+                    <code>wh = <var>2 * r</var> \pi \cdot <var>h</var> =
+                        <var>2 * r * h</var> \pi</code>.
+                </p>
+                <p>
+                    The total surface area is
+                    <code><var>r * r</var> \pi + <var>r * r</var> \pi +
+                        <var>2 * r * h</var> \pi =
+                        <var>2 * r * ( r + h )</var>\pi</code>.
+                </p>
             </div>
         </div>
     </div>
