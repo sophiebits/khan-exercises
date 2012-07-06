@@ -4,6 +4,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Solid geometry</title>
     <script src="../khan-exercise.js"></script>
+    <script type="text/javascript">
+        var makeSquare = function(left, width, bottom, height, color) {
+            KhanUtil.currentGraph.path([
+                    [left, bottom],
+                    [left, bottom + height],
+                    [left + width, bottom + height],
+                    [left + width, bottom],
+                    true
+                ],
+                { stroke: "black", strokeWidth: 1, fill: color }
+            );
+        };
+    </script>
 </head>
 <body>
 <div class="exercise">
@@ -283,7 +296,6 @@
                         ];
 
                         var size = 2 * WIDTH / MAX + 2 * HEIGHT / MAX;
-                        console.log(size);
                         init({range: [[-2, 2], [-2, 2]], scale: [100, 100]});
 
                         graph.obj = makeObject(verts);
@@ -378,52 +390,29 @@
                         <div class="graphie">
                             var width = WIDTH + 2 + LENGTH + 2 + HEIGHT + 2;
                             var height = max(max(WIDTH, LENGTH), HEIGHT) + 1;
-                            init({range: [[-1, width + 1], [-1, height + 1]], scale: [400 / width, 400 / width]});
+                            init({range: [[-1, width + 1], [-1, height + 1]],
+                                scale: [400 / width, 400 / width]});
 
-                            path([[0, 0],
-                                  [0, WIDTH],
-                                  [HEIGHT, WIDTH],
-                                  [HEIGHT, 0],
-                                  true],
-                                 { stroke: "black", strokeWidth: 1, fill: BLUE });
-                            path([[1, 1],
-                                  [1, 1 + WIDTH],
-                                  [1 + HEIGHT, 1 + WIDTH],
-                                  [1 + HEIGHT, 1],
-                                  true],
-                                 { stroke: "black", strokeWidth: 1, fill: BLUE });
-                            label([1 + HEIGHT / 2 - 0.2, WIDTH + 1 + 0.2], HEIGHT, "below");
-                            label([1 + HEIGHT + 0.1, 1 + WIDTH / 2], WIDTH, "left");
+                            makeSquare(0, HEIGHT, 0, WIDTH, BLUE);
+                            makeSquare(1, HEIGHT, 1, WIDTH, BLUE);
+                            label([0.8 + HEIGHT / 2, WIDTH + 1.2],
+                                HEIGHT, "below");
+                            label([1.1 + HEIGHT, 1 + WIDTH / 2],
+                                WIDTH, "left");
 
-                            path([[HEIGHT + 2, 0],
-                                  [HEIGHT + 2, LENGTH],
-                                  [HEIGHT + 2 + WIDTH, LENGTH],
-                                  [HEIGHT + 2 + WIDTH, 0],
-                                  true],
-                                 { stroke: "black", strokeWidth: 1, fill: GREEN });
-                            path([[1 + HEIGHT + 2, 1],
-                                  [1 + HEIGHT + 2, 1 + LENGTH],
-                                  [1 + HEIGHT + 2 + WIDTH, 1 + LENGTH],
-                                  [1 + HEIGHT + 2 + WIDTH, 1],
-                                  true],
-                                 { stroke: "black", strokeWidth: 1, fill: GREEN });
-                            label([3 + HEIGHT + WIDTH / 2 - 0.2, 1 + LENGTH + 0.2], WIDTH, "below");
-                            label([1 + HEIGHT + 2 + WIDTH + 0.1, 1 + LENGTH / 2], LENGTH, "left");
+                            makeSquare(HEIGHT + 2, WIDTH, 0, LENGTH, GREEN);
+                            makeSquare(HEIGHT + 3, WIDTH, 1, LENGTH, GREEN);
+                            label([2.8 + HEIGHT + WIDTH / 2, 1.2 + LENGTH],
+                                WIDTH, "below");
+                            label([3.1 + HEIGHT + WIDTH, 1 + LENGTH / 2],
+                                LENGTH, "left");
 
-                            path([[4 + HEIGHT + WIDTH, 0],
-                                  [4 + HEIGHT + WIDTH, HEIGHT],
-                                  [4 + HEIGHT + WIDTH + LENGTH, HEIGHT],
-                                  [4 + HEIGHT + WIDTH + LENGTH, 0],
-                                  true],
-                                 { stroke: "black", strokeWidth: 1, fill: GRAY });
-                            path([[1 + 4 + HEIGHT + WIDTH, 1],
-                                  [1 + 4 + HEIGHT + WIDTH, 1 + HEIGHT],
-                                  [1 + 4 + HEIGHT + WIDTH + LENGTH, 1 + HEIGHT],
-                                  [1 + 4 + HEIGHT + WIDTH + LENGTH, 1],
-                                  true],
-                                 { stroke: "black", strokeWidth: 1, fill: GRAY });
-                            label([5 + HEIGHT + WIDTH + LENGTH / 2 - 0.2, 1 + HEIGHT + 0.2], LENGTH, "below");
-                            label([5 + HEIGHT + WIDTH + LENGTH + 0.1, 1 + HEIGHT / 2], HEIGHT, "left");
+                            makeSquare(HEIGHT + WIDTH + 4, LENGTH, 0, HEIGHT, GRAY);
+                            makeSquare(HEIGHT + WIDTH + 5, LENGTH, 1, HEIGHT, GRAY);
+                            label([4.8 + HEIGHT + WIDTH + LENGTH / 2, 1.2 + HEIGHT],
+                                LENGTH, "below");
+                            label([5.1 + HEIGHT + WIDTH + LENGTH, 1 + HEIGHT / 2],
+                                HEIGHT, "left");
                         </div>
                     </div>
                     <div>
@@ -484,12 +473,7 @@
                             var colors = [GRAY, GRAY, BLUE, BLUE, GREEN, GREEN];
 
                             for (var i = 0; i < 6; ++i) {
-                                path([[i, i / 3],
-                                      [i, i / 3 + WIDTH],
-                                      [i + HEIGHT, i / 3 + WIDTH],
-                                      [i + HEIGHT, i / 3],
-                                      true],
-                                     { stroke: "black", strokeWidth: 1, fill: colors[i] });
+                                makeSquare(i, HEIGHT, i / 3, WIDTH, colors[i]);
                             }
                             label([5 + WIDTH / 2 - 0.2, 5 / 3 + WIDTH + 0.1], WIDTH, "below");
                             label([5 + WIDTH, 5 / 3 + WIDTH / 2], WIDTH, "left");
