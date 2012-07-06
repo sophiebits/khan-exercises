@@ -215,18 +215,24 @@
 
         <div id="int-box-T" data-type="int-box-V">
             <p class="question">
-                What is the surface area of this box? Drag on the box to rotate it.
+                What is the surface area of this box?
+                Drag on the box to rotate it.
             </p>
 
             <div class="solution">
-                <var>2 * LENGTH * WIDTH + 2 * LENGTH * HEIGHT + 2 * WIDTH * HEIGHT</var>
+                <var>2 * LENGTH * WIDTH +
+                    2 * LENGTH * HEIGHT +
+                    2 * WIDTH * HEIGHT</var>
             </div>
 
             <div class="hints">
-                <p>To find the surface area, find the areas of each of the faces, and add all the areas up.</p>
+                <p>To find the surface area, find the areas
+                of each of the faces, and add all the areas up.</p>
                 <div>
                     <p>To see this better, let's try unwrapping the box:
-                    <input type="submit" value="Unwrap!" onclick="KhanUtil.tmpl.getVAR('UNWRAPGRAPH.unwrap()')" /></p>
+                    <input type="submit" value="Unwrap!"
+                        onclick="KhanUtil.tmpl.getVAR('UNWRAPGRAPH.unwrap()')"
+                    /></p>
                     <div class="graphie">
                         var verts = [
                             [LENGTH/MAX, WIDTH/MAX, HEIGHT/MAX],
@@ -311,40 +317,50 @@
                                 duration: 3000,
                                 easing: "linear",
                                 step: function(now, fx) {
-                                    verts[4][2] = cos(now) * HEIGHT / MAX;
-                                    verts[0][2] = cos(now) * HEIGHT / MAX;
+                                    verts[4][2] = verts[0][2] =
+                                        cos(now) * HEIGHT / MAX;
 
-                                    verts[4][1] = WIDTH / MAX + 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
-                                    verts[0][1] = WIDTH / MAX + 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+                                    verts[4][1] = verts[0][1] =
+                                        WIDTH / MAX +
+                                        2 * cos((PI - now) / 2) * HEIGHT / MAX;
 
-                                    verts[3][2] = cos(now) * HEIGHT / MAX;
-                                    verts[7][2] = cos(now) * HEIGHT / MAX;
+                                    verts[3][2] = verts[7][2] =
+                                        cos(now) * HEIGHT / MAX;
 
-                                    verts[3][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
-                                    verts[7][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+                                    verts[3][1] = verts[7][1] =
+                                        -WIDTH / MAX -
+                                        2 * cos((PI - now) / 2) * HEIGHT / MAX;
 
-                                    verts[8][2] = cos(now) * HEIGHT / MAX;
-                                    verts[9][2] = cos(now) * HEIGHT / MAX;
+                                    verts[8][2] = verts[9][2] =
+                                        cos(now) * HEIGHT / MAX;
 
-                                    verts[8][0] = LENGTH / MAX + 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
-                                    verts[9][0] = LENGTH / MAX + 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+                                    verts[8][0] = verts[9][0] =
+                                        LENGTH / MAX +
+                                        2 * cos((PI - now) / 2) * HEIGHT / MAX;
 
-                                    verts[10][2] = cos(now) * HEIGHT / MAX;
-                                    verts[11][2] = cos(now) * HEIGHT / MAX;
+                                    verts[10][2] = verts[11][2] =
+                                        cos(now) * HEIGHT / MAX;
 
-                                    verts[10][0] = -LENGTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
-                                    verts[11][0] = -LENGTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX;
+                                    verts[10][0] = verts[11][0] =
+                                        -LENGTH / MAX -
+                                        2 * cos((PI - now) / 2) * HEIGHT / MAX;
 
-                                    verts[12][2] = cos(now) * HEIGHT / MAX + 2 * sin(now) * WIDTH / MAX;
-                                    verts[13][2] = cos(now) * HEIGHT / MAX + 2 * sin(now) * WIDTH / MAX;
+                                    verts[12][2] = verts[13][2] =
+                                        cos(now) * HEIGHT / MAX +
+                                        2 * sin(now) * WIDTH / MAX;
 
-                                    verts[12][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX + 2 * cos(now) * WIDTH / MAX;
-                                    verts[13][1] = -WIDTH / MAX - 2 * cos(PI / 2 - now / 2) * HEIGHT / MAX + 2 * cos(now) * WIDTH / MAX;
+                                    verts[12][1] = verts[13][1] =
+                                        -WIDTH / MAX -
+                                        2 * cos(PI / 2 -
+                                        now / 2) * HEIGHT / MAX +
+                                        2 * cos(now) * WIDTH / MAX;
 
                                     if (now < PI / 2) {
-                                        UNWRAPGRAPH.obj.rotate(0, 1, 0, -2 / 10 * (now - last));
+                                        UNWRAPGRAPH.obj.rotate(0, 1, 0,
+                                            -2 / 10 * (now - last));
                                     } else {
-                                        UNWRAPGRAPH.obj.rotate(1, 0, 0, -2 / 8 * (now - last));
+                                        UNWRAPGRAPH.obj.rotate(1, 0, 0,
+                                            -2 / 8 * (now - last));
                                     }
 
                                     last = now;
@@ -357,7 +373,8 @@
                 </div>
                 <div id="unwrapped" data-unwrap>
                     <div>
-                        <p>We can group the faces together based on size and color:</p>
+                        <p>We can group the faces together
+                            based on size and color:</p>
                         <div class="graphie">
                             var width = WIDTH + 2 + LENGTH + 2 + HEIGHT + 2;
                             var height = max(max(WIDTH, LENGTH), HEIGHT) + 1;
