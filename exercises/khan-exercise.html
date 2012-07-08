@@ -18,6 +18,31 @@
     </div>
     <div id="answer_area_wrap"><div id="answer_area">
         <form id="answerform" action="/exercisedashboard" method="get" name="answerform">
+            <div class="info-box">
+                <span class="info-box-header">Calculator</span>
+                <div class="calculator">
+                    <div class="history">
+                        <div class="row input"><input type="text"></div>
+                    </div>
+                    <div class="keypad">
+                        <div class="row">
+                        <a href="#" data-text="sqrt(">&radic;</a><a href="#">^</a><a href="#">(</a><a href="#">)</a>
+                        </div>
+                        <div class="row">
+                        <a href="#">7</a><a href="#">8</a><a href="#">9</a><a href="#" data-behavior="bs">del</a><a href="#" data-behavior="clear">ac</a>
+                        </div>
+                        <div class="row">
+                        <a href="#">4</a><a href="#">5</a><a href="#">6</a><a href="#" data-text="*">&times;</a><a href="#" data-text="/">&divide;</a>
+                        </div>
+                        <div class="row">
+                        <a href="#">1</a><a href="#">2</a><a href="#">3</a><a href="#">+</a><a href="#" data-text="-">&minus;</a>
+                        </div>
+                        <div class="row">
+                        <a href="#">0</a><a href="#">.</a><a href="#" data-text="ans">ans</a><a href="#" data-behavior="evaluate" class="wide">=</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="answercontent" class="info-box fancy-scrollbar">
                 <a id="examples-show">Acceptable formats</a>
                 <ul id="examples" style="display: none"></ul>

@@ -720,7 +720,7 @@ var Khan = (function() {
         }
 
         // Base modules required for every problem
-        Khan.require(["answer-types", "tmpl", "underscore", "jquery.adhesion", "hints"]);
+        Khan.require(["answer-types", "tmpl", "underscore", "jquery.adhesion", "hints", "calculator"]);
 
         Khan.require(document.documentElement.getAttribute("data-require"));
 
@@ -1197,23 +1197,9 @@ var Khan = (function() {
 
         // A working solution was generated
         if (validator) {
-            // Focus the first input
-            // Use .select() and on a delay to make IE happy
-            var firstInput = solutionarea.find(":input").first();
             setTimeout(function() {
-                if (!firstInput.is(":disabled")) {
-                    firstInput.focus();
-                    if (firstInput.is("input:text")) {
-                        firstInput.select();
-                    }
-                }
+                $(".calculator input").focus();
             }, 1);
-
-            lastFocusedSolutionInput = firstInput;
-            solutionarea.find(":input").focus(function() {
-                // Save which input is focused so we can refocus it after the user hits Check Answer
-                lastFocusedSolutionInput = this;
-            });
         } else {
             // Making the problem failed, let's try again
             problem.remove();
@@ -2072,6 +2058,65 @@ var Khan = (function() {
 
             return false;
         }
+
+        function initializeCalculator() {
+            var calculator = $(".calculator"),
+                history = calculator.children(".history"),
+                inputRow = history.children(".row.input"),
+                input = inputRow.children("input"),
+                buttons = calculator.children(".keypad").find("a"),
+                lastInstr = "",
+                ans;
+
+            var evaluate = function() {
+                var instr = lastInstr = input.val(),
+                    output = ans = Calculator.calculate(instr, ans),
+                    outstr = Math.round(output * 1000000000) / 1000000000;
+                    row = $("<div>").addClass("row"),
+                    indiv = $("<div>").addClass("input").text(instr).appendTo(row),
+                    outdiv = $("<div>").addClass("output").text(output).appendTo(row);
+
+                inputRow.before(row);
+                input.val("");
+            };
+
+            input.on("keyup", function(e) {
+                if (e.which === 13) {
+                    evaluate();
+                    return false;
+                } else if (e.which === 38) {
+                    if (lastInstr !== "") {
+                        input.val(lastInstr);
+                    }
+                    return false;
+                }
+            });
+
+            buttons.on("click", function() {
+                var jel = $(this),
+                    behavior = jel.data("behavior");
+
+                if (behavior != null) {
+                    if (behavior === "bs") {
+                        var val = input.val();
+                        input.val(val.slice(0, val.length - 1));
+                    } else if (behavior === "clear") {
+                        input.val("");
+                        history.children().not(inputRow).remove();
+                    } else if (behavior === "evaluate") {
+                        evaluate();
+                    }
+                } else {
+                    var text = jel.data("text") || jel.text();
+                    input.val(input.val() + text);
+                }
+
+                input.focus();
+                return false;
+            });
+        };
+
+        initializeCalculator();
 
         // Watch for when the next button is clicked
         $("#next-question-button").click(function(ev) {
