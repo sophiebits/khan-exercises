@@ -33,7 +33,7 @@
                 <var id="ANG">atan2(SLOPE, 1) + PI / 2</var>
                 <var id="PERP">[cos(ANG), sin(ANG)]</var>
                 <var id="TOTALOFFSET">[]</var>
-                <var id="POINTS">_.map(XS, function(x) {
+                <var id="POINTS">_.sortBy(_.map(XS, function(x) {
                     var total = _.reduce(TOTALOFFSET, function(sum, num) {
                         return sum + num;
                     }, 0);
@@ -46,7 +46,7 @@
 
                     return [BOUND(round(x + PERP[0] * offset), -9, 9),
                             BOUND(round(FUNC(x) + PERP[1] * offset), -9, 9)];
-                })</var>
+                    }), function(pt) { return pt[0]; })</var>
             </div>
 
             <p class="question">Find the line of best fit</p>
@@ -120,11 +120,16 @@
                 <div class="validator-function">
                     var slope = (guess[0][1] - guess[1][1]) /
                         (guess[0][0] - guess[1][0]);
-                    var intersect = slope * -guess[0][0] + guess[0][1];
-                    return abs(slope / SLOPE - 1) +
-                        abs(intersect - INTERSECT) /
-                            BOUND(abs(SLOPE), 1, Infinity)
-                        < OFFSET;
+                    var intercept = slope * -guess[0][0] + guess[0][1];
+                    var updown = _.map(POINTS, function(pt) {
+                        var x = pt[0], y = pt[1],
+                            est = slope * x + intercept;
+                        return y &gt;= est ? 1 : -1;
+                    });
+                    console.log(updown);
+                    var updowns = sortNumbers(updown);
+                    var updownr = updowns.slice(0).reverse();
+                    return !_.isEqual(updown, updowns) && !_.isEqual(updown, updownr) && _.isEqual(_.uniq(updowns), [-1, 1]);
                 </div>
                 <div class="show-guess">
                     graph.pointA.coord = guess[0];
