@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html data-require="math">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Vertex of a parabola</title>
+    <script src="../khan-exercise.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+<div class="exercise">
+    <div class="problems">
+        <div id="standard-form">
+            <!--
+                The "vars" section generates the random variables for the
+                exercise. The range of values chosen should ideally ensure a
+                variety of questions of similar difficulty.
+
+                The "data-ensure" ensures that if random values of H and K
+                are chosen such that H*H+K (i.e. the constant term of the
+                quadratic) is 0, the framework will re-pick a new H and K.
+
+                Everything inside the <var> tags is evaluated as javascript.
+                The code for randRangeNonZero is in utils/math.js
+            -->
+            <div class="vars" data-ensure="H * H + K !== 0">
+                <var id="H">randRangeNonZero(-5, -5)</var>
+                <var id="K">randRangeNonZero(3, 3)</var>
+            </div>
+
+            <!--
+                The "problem" section sets up the problem. Feel free to reword
+                any of this if you think there's a better way to ask the
+                question
+
+                Everything inside the <code> tags is rendered as LaTeX.
+                Everything inside the <var> tags is evaluated as javascript
+                with any variables defined above in scope.
+            -->
+            <div class="problem">
+                <p>Given this function of a parabola:</p>
+                <p>
+                    <code>y = x^2 + <var>-2 * H</var>x + <var>H * H + K</var></code>
+                </p>
+            </div>
+
+            <!--
+                The "question" section is usually a direct one-sentence
+                question.
+            -->
+            <p class="question">
+                What is the parabola's vertex?
+            </p>
+
+            <!--
+                The "solution" section defines the answer format and the right
+                answer. In this case, there are multiple text boxes.
+            -->
+            <div class="solution" data-type="multiple">
+                <p>
+                    <code>(</code>
+                    <span class="sol"><var>H</var></span>
+                    <code>,</code>
+                    <span class="sol"><var>K</var></span>
+                    <code>)</code>
+                </p>
+                <div class="example">
+                    a point, like <code>(-5, 3)</code>
+                </div>
+            </div>
+
+            <!--
+                The hints are there to help students who are stuck. Many
+                students also use hints to teach themselves a concept for the
+                first time. In our experience many students prefer trying to
+                learn a concept by looking at hints over taking the time to
+                watch a video.
+
+                Each <div> within this section defines a hint that is shown
+                each time the "I'd like a hint" button is clicked.
+            -->
+            <div class="hints">
+                <div>
+                    <p><code>
+                        y = x^2 + <var>-2 * H</var>x + <var>H * H + K</var>
+                    </code></p>
+                </div>
+
+                <div>
+                    <p><code>
+                        y - <var>H * H + K</var> = x^2 + <var>-2 * H</var>x
+                    </code></p>
+                </div>
+
+                <div>
+                    <p><code>
+                        y - <var>H * H + K</var> + <var>H * H</var> =
+                        x^2 + <var>-2 * H</var>x + <var>H * H</var>
+                    </code></p>
+                </div>
+
+                <div>
+                    <p><code>
+                        y - <var>K</var> =
+                        x^2 + <var>-2 * H</var>x + <var>H * H</var>
+                    </code></p>
+                </div>
+
+                <div>
+                    <p><code>
+                        y - <var>K</var> = (x - <var>H</var>)^2
+                    </code></p>
+                </div>
+
+                <!--
+                    There are LaTeX macros defined for \blue{}, \orange{},
+                    \pink{}, \green{}, \gray{}, and \purple{} along with
+                    corresponding CSS styles ".hint_blue", ".hint_orange", etc.
+                -->
+                <div>
+                    <p><code>
+                        y - \blue{(<var>K</var>)} = (x - \green{(<var>H</var>)})^2
+                    </code></p>
+                </div>
+
+                <div>
+                    <p>
+                        The vertex is
+                        <code>(\green{<var>H</var>}, \blue{<var>K</var>})</code>.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
