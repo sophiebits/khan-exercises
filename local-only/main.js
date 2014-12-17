@@ -26,6 +26,7 @@ requirejs([
         "../local-only/i18n.js"
     ], function() {
         requirejs([
+            "../confetti.js",
             "../history.js",
             "../interface.js",
         ], function() {

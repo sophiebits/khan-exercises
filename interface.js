@@ -357,7 +357,7 @@ function handleAttempt(data) {
             .val(nextButtonText)
             .show()
             .focus();
-        $("#positive-reinforcement").show();
+        Confetti.render($(".answer-buttons .confetti-container")[0]);
         $("#skip-question-button").prop("disabled", true);
         $("#opt-out-button").prop("disabled", true);
     } else {
